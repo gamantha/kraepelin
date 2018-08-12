@@ -16,4 +16,5 @@
 - create virtualenv `virtualenv -p python3 env`
 - activate virtual environment `cd kraepelin` & `. env/bin/activate`
 - install dependencies `pip install -r requirements.txt`
+- copy `.env.example` file `cp .env.example .env`
 - run in dev mode `python wsgi.py`, it should be running on `localhost:5000`
