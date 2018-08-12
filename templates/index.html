@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        <!-- bootstrap css and js -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <!-- bootstrap css and js -->
+        <title>{{title}}</title>
+    </head>
+    <body>
+        <h1 class="text-center text-warning">Kraepelin Test</h1>
+        <div class="text-center">
+            <button id="btn_start" type="button" class="btn btn-primary text-center">Mulai</button>
+        </div>
+        <h5 class="text-center text-info" id="countdowntimer">Selamat Datang</h5>
+        <table class="table table-striped">
+            {% for i in data %}
+                <tr class="w-">
+                    {% for j in i %}
+                        <td class="text-center">
+                            <span class="question-point">
+                                {{ j }}
+                            </span>
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% if loop.index < i|length %}
+                    <tr>
+                        {% for k in range(i|length) %}
+                            <td class="text-right">
+                                <input min="0" max="9" class="text-right input-answer" type="number"/>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+
+            {% endfor %}
+
+        </table>
+        <div class="text-center">
+            <button id="btn_finish" disabled class="btn btn-primary">Selesai</button>
+        </div>
+    </body>
+    <script>
+        var toggleStart = false;
+        var x;
+        document.getElementById("btn_start").addEventListener("click", startTimer);
+        toggleInput(true)
+
+        function toggleInput(disabled) {
+            var inputs = document.getElementsByClassName("input-answer")
+            for (var i = 0; i < inputs.length; i++) { 
+                inputs[i].disabled = disabled;
+                inputs[i].value = '';
+            }
+        }
+
+        function startTimer() {
+            if(toggleStart === true) {
+                toggleStart = false;
+                clearInterval(x);
+                document.getElementById("countdowntimer").innerHTML = "Selamat Datang";
+                document.getElementById("btn_start").innerHTML = "Mulai"
+                document.getElementById("btn_finish").disabled = true;
+                toggleInput(true);
+            } else {
+                toggleStart = true;
+                toggleInput(false);
+                Date.prototype.addHours= function(h){
+                    this.setHours(this.getHours()+h);
+                    return this;
+                }
+                var countDownDate = new Date().addHours(1).getTime();
+                // Change button label
+                document.getElementById("btn_start").innerHTML = "Berhenti"
+                document.getElementById("btn_finish").disabled = false;
+                // Update the count down every 1 second
+                x = setInterval(function() {
+                    // Get todays date and time
+                    var now = new Date().getTime();
+
+                    // Find the distance between now and the count down date
+                    var distance = countDownDate - now;
+
+                    // Time calculations for days, hours, minutes and seconds
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    // Display the result in the element with id="demo"
+                    document.getElementById("countdowntimer").innerHTML = hours + "h "
+                    + minutes + "m " + seconds + "s ";
+
+                    // If the count down is finished, write some text 
+                    if (distance < 0) {
+                        clearInterval(x);
+                        document.getElementById("countdowntimer").innerHTML = "EXPIRED";
+                    }
+                }, 1000);
+            }
+
+        }
+    </script>
+
+</html>
