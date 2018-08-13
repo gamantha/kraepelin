@@ -1,0 +1,9 @@
+class Http:
+    """
+    Http codes
+    """
+    CREATED=201
+    SUCCESS=200
+    NOT_FOUND=404
+    UNPROCESSABLE_ENTITY=422
+    INTERNAL_SERVER_ERROR=500
