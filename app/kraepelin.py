@@ -7,6 +7,7 @@ from werkzeug.contrib.fixers import ProxyFix
 from .routes.public import public_routes
 
 from .config import settings
+from .models import db
 
 logging.config.dictConfig({
     'version': 1,
@@ -27,6 +28,9 @@ logging.config.dictConfig({
 def create_app(configuration):
     log = logging.getLogger(__name__)
     app = Flask(__name__, template_folder='../templates', static_folder='../static')
+    app.config.from_object(configuration)
+    # init db
+    db.init_app(app)
     # logging_tree.printout()
     log.info('Starting Flask app %s...', __name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
