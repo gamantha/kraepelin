@@ -19,10 +19,14 @@ class KraepelinService():
             result.append(temp_arr)
         return result
 
-    def asess_test_data(self):
+    def asess_test_data(self, payload):
         """
         Asess test result.
+        @param payload - pauload dictionary
+        @return dict
         """
-        return True
+        # calculate result
+        # store to database
+        return {'score': 100, 'grade': 'A'}
     
     

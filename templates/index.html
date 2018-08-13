@@ -5,6 +5,8 @@
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
         <!-- bootstrap css and js -->
+        <!-- jquery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <title>{{title}}</title>
     </head>
     <body>
@@ -44,11 +46,12 @@
     <script>
         var toggleStart = false;
         var x;
-        document.getElementById("btn_start").addEventListener("click", startTimer);
+        $("#btn_start").bind("click", startTimer);
+        $("#btn_finish").bind("click", postResult);
         toggleInput(true)
 
         function toggleInput(disabled) {
-            var inputs = document.getElementsByClassName("input-answer")
+            var inputs = $(".input-answer")
             for (var i = 0; i < inputs.length; i++) { 
                 inputs[i].disabled = disabled;
                 inputs[i].value = '';
@@ -59,9 +62,9 @@
             if(toggleStart === true) {
                 toggleStart = false;
                 clearInterval(x);
-                document.getElementById("countdowntimer").innerHTML = "Selamat Datang";
-                document.getElementById("btn_start").innerHTML = "Mulai"
-                document.getElementById("btn_finish").disabled = true;
+                $("#countdowntimer").html("Selamat Datang");
+                $("#btn_start").html("Mulai");
+                $("#btn_finish").prop('disabled', true);
                 toggleInput(true);
             } else {
                 toggleStart = true;
@@ -72,8 +75,8 @@
                 }
                 var countDownDate = new Date().addHours(1).getTime();
                 // Change button label
-                document.getElementById("btn_start").innerHTML = "Berhenti"
-                document.getElementById("btn_finish").disabled = false;
+                $("#btn_start").html("Berhenti")
+                $("#btn_finish").prop('disabled', false);
                 // Update the count down every 1 second
                 x = setInterval(function() {
                     // Get todays date and time
@@ -88,17 +91,33 @@
                     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                     // Display the result in the element with id="demo"
-                    document.getElementById("countdowntimer").innerHTML = hours + "h "
-                    + minutes + "m " + seconds + "s ";
+                    $("#countdowntimer").html(hours + "h "
+                    + minutes + "m " + seconds + "s ");
 
                     // If the count down is finished, write some text 
                     if (distance < 0) {
                         clearInterval(x);
-                        document.getElementById("countdowntimer").innerHTML = "EXPIRED";
+                        toggleInput(true);
+                        $("#countdowntimer").html("Waktu Selesai");
                     }
                 }, 1000);
             }
 
+        }
+
+        function postResult() {
+            console.log('[ccasa')
+            $.ajax({
+                url: '/assess',
+                contentType: 'application/json',
+                accepts: 'application/json',
+                method: 'POST',
+                data: JSON.stringify({payload: 'andy'})
+            }).done(function (data) {
+                console.log(data, 'done data')
+            }).fail(function (err) {
+                console.log(err, 'fail error')
+            })
         }
     </script>
 
