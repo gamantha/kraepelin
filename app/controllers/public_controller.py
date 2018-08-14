@@ -21,10 +21,9 @@ class PublicController(BaseController):
         Assess result of user answers.
         """
         # extract data
-        print(request.json)
         payload = request.json['payload'] if  'payload' in request.json else None
         if payload is None:
             return self.json_response({}, Http.UNPROCESSABLE_ENTITY)
         # calculate and store user result
-        result = kraepelin_service.asess_test_data(request)
+        result = kraepelin_service.asess_test_data(request.json['payload'])
         return self.json_response(result, status_code=Http.CREATED)

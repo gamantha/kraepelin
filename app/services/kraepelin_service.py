@@ -1,4 +1,11 @@
 import random
+import logging
+from flask import json
+from sqlalchemy.exc import SQLAlchemyError
+from app.models import db
+from app.models.kraepelin import Kraepelin
+
+logger = logging.getLogger(__name__)
 
 class KraepelinService():
     """
@@ -25,8 +32,17 @@ class KraepelinService():
         @param payload - pauload dictionary
         @return dict
         """
-        # calculate result
+        # TODO: calculate result
         # store to database
-        return {'score': 100, 'grade': 'A'}
-    
+        kraepelin = Kraepelin()
+        kraepelin.answers = json_mylist = json.dumps(payload['answers'], separators=(',',':'))
+        db.session.add(kraepelin)
+        try:
+            logger.info('committing data to database.')
+            db.session.commit()
+        except SQLAlchemyError as e:
+            data = e.orig.args
+            logger.warning('an error occured when writing to database: ' + data)
+            return False
+        return True
     

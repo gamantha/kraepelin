@@ -44,6 +44,9 @@
         </div>
     </body>
     <script>
+        var questions = {{ data | tojson }};
+        var answers = [1, 2, 3, 4, 5];
+
         var toggleStart = false;
         var x;
         $("#btn_start").bind("click", startTimer);
@@ -106,13 +109,15 @@
         }
 
         function postResult() {
-            console.log('[ccasa')
             $.ajax({
                 url: '/assess',
                 contentType: 'application/json',
                 accepts: 'application/json',
                 method: 'POST',
-                data: JSON.stringify({payload: 'andy'})
+                data: JSON.stringify({payload: {
+                    questions,
+                    answers
+                }})
             }).done(function (data) {
                 console.log(data, 'done data')
             }).fail(function (err) {
