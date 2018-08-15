@@ -19,7 +19,11 @@ depends_on = None
 def upgrade():
     op.create_table('kraepelins',
         sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('user_id', sa.String(255)),
         sa.Column('answers', sa.Text),
+        sa.Column('questions', sa.Text),
+        sa.Column('correct_count', sa.Integer),
+        sa.Column('answer_count', sa.Integer),
         sa.Column('created_at', sa.DateTime),
         sa.Column('updated_at', sa.DateTime)
         )

@@ -10,7 +10,11 @@ class Kraepelin(db.Model):
     __tablename__ = 'kraepelins'
 
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(255))
     answers = db.Column(db.Text)
+    questions = db.Column(db.Text)
+    correct_count = db.Column(db.Integer)
+    answer_count = db.Column(db.Integer)
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
 
