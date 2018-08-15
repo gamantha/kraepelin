@@ -25,5 +25,9 @@ class PublicController(BaseController):
         if payload is None:
             return self.json_response({}, Http.UNPROCESSABLE_ENTITY)
         # calculate and store user result
-        result = kraepelin_service.asess_test_data(request.json['payload'])
-        return self.json_response(result, status_code=Http.CREATED)
+        try:
+            result = kraepelin_service.asess_test_data(request.json['payload'])
+            return self.json_response(result, status_code=Http.CREATED)
+        except Exception as e:
+            print(e)
+            return self.error_response(e, '/assess', Http.INTERNAL_SERVER_ERROR)
