@@ -45,7 +45,6 @@
     </body>
     <script>
         var questions = {{ data | tojson }};
-        var answers = [1, 2, 3, 4, 5];
 
         var toggleStart = false;
         var x;
@@ -59,6 +58,15 @@
                 inputs[i].disabled = disabled;
                 inputs[i].value = '';
             }
+        }
+
+        function fetchAnswers() {
+            result = []
+            var inputs = $(".input-answer")
+            for (var i = 0; i < inputs.length; i++) { 
+                result.push(parseInt(inputs[i].value));
+            }
+            return result
         }
 
         function startTimer() {
@@ -109,6 +117,7 @@
         }
 
         function postResult() {
+            answers = fetchAnswers();
             $.ajax({
                 url: '/assess',
                 contentType: 'application/json',
@@ -116,7 +125,8 @@
                 method: 'POST',
                 data: JSON.stringify({payload: {
                     questions,
-                    answers
+                    answers,
+                    user_id: '123',
                 }})
             }).done(function (data) {
                 console.log(data, 'done data')
