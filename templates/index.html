@@ -109,7 +109,7 @@
                     if (distance < 0) {
                         clearInterval(x);
                         toggleInput(true);
-                        $("#countdowntimer").html("Waktu Selesai");
+                        postResult();
                     }
                 }, 1000);
             }
@@ -129,9 +129,10 @@
                     user_id: '123',
                 }})
             }).done(function (data) {
-                console.log(data, 'done data')
+                confirm('jawaban anda telah terkumpul.');
+                location.reload();
             }).fail(function (err) {
-                console.log(err, 'fail error')
+                location.reload();
             })
         }
     </script>
