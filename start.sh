@@ -1,1 +1,1 @@
-gunicorn wsgi:app -k gevent -w 4 -b 0.0.0.0:8000 --log-config log.conf -D
+gunicorn wsgi:app -k gevent -w 4 -b unix:kraepelin.sock --log-config log.conf -D
