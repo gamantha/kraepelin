@@ -16,6 +16,7 @@
         </div>
         <h5 class="text-center text-info" id="countdowntimer">Selamat Datang</h5>
         <table class="table table-striped">
+            {% set total_tab = (data|length)*(data[0]|length) %}
             {% for i in data %}
                 <tr class="w-">
                     {% for j in i %}
@@ -27,10 +28,12 @@
                     {% endfor %}
                 </tr>
                 {% if loop.index < i|length %}
+                    {% set outer_loop_in = loop.index %}
                     <tr>
                         {% for k in range(i|length) %}
+                            {% set inner_loop_in = loop.index %}
                             <td class="text-right">
-                                <input min="0" max="9" class="text-right input-answer" type="number"/>
+                                <input tabindex="{{ total_tab - (inner_loop_in + (outer_loop_in * i|length)) }}" min="0" max="9" class="text-right input-answer" type="number"/>
                             </td>
                         {% endfor %}
                     </tr>
@@ -45,18 +48,31 @@
     </body>
     <script>
         var questions = {{ data | tojson }};
-
+        var col = questions[0].length;
+        var curr_col = -1;
         var toggleStart = false;
         var x;
         $("#btn_start").bind("click", startTimer);
         $("#btn_finish").bind("click", postResult);
         toggleInput(true)
 
-        function toggleInput(disabled) {
+        function toggleInput(disabled, emptyFlag = true) {
             var inputs = $(".input-answer")
             for (var i = 0; i < inputs.length; i++) { 
                 inputs[i].disabled = disabled;
+                if (emptyFlag) {
+                    inputs[i].value = '';
+                }
+            }
+        }
+        
+        function toggleUserInput(col_index) {
+            toggleInput(true, false);
+            var inputs = $(".input-answer")
+            for (var i = col_index; i < inputs.length; i+=col) { 
+                inputs[i].disabled = false;
                 inputs[i].value = '';
+                inputs[i].focus();
             }
         }
 
@@ -79,7 +95,8 @@
                 toggleInput(true);
             } else {
                 toggleStart = true;
-                toggleInput(false);
+                curr_col = 0;
+                toggleUserInput(curr_col);
                 Date.prototype.addHours= function(h){
                     this.setHours(this.getHours()+h);
                     return this;
@@ -97,19 +114,24 @@
                     var distance = countDownDate - now;
 
                     // Time calculations for days, hours, minutes and seconds
-                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 20)) / 1000);
 
                     // Display the result in the element with id="demo"
-                    $("#countdowntimer").html(hours + "h "
-                    + minutes + "m " + seconds + "s ");
+                    $("#countdowntimer").html(seconds + " detik ");
 
-                    // If the count down is finished, write some text 
-                    if (distance < 0) {
-                        clearInterval(x);
-                        toggleInput(true);
-                        postResult();
+                    // every 20 second
+                    if (seconds % 20 == 0) {
+                        console.log(distance, distance%20)
+                        curr_col++;
+                        if (curr_col >= col) {
+                            clearInterval(x);
+                            toggleInput(true);
+                            postResult();
+                            location.reload();
+                        }
+                        toggleUserInput(curr_col);
                     }
                 }, 1000);
             }
