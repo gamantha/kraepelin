@@ -78,15 +78,15 @@
                     $(item).val('');
                 }
             });
-            // for (var i = 0; i < inputs.length; i++) { 
-            //     inputs[i].disabled = disabled;
-            //     if (emptyFlag) {
-            //         inputs[i].val('');
-            //     }
-            // }
         }
 
-
+        $(':input').focus(function(){
+            var center = $(window).height()/2;
+            var top = $(this).offset().top ;
+            if (top > center){
+                $(window).scrollTop(top-center);
+            }
+        });
         
         function toggleUserInput(col_index) {
             toggleInput(true, false);
