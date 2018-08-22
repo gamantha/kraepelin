@@ -13,7 +13,7 @@ class PublicController(BaseController):
         Generate needed data for displaying on front page.
         """
         size = request.args.get('size')
-        data = kraepelin_service.prepare_test_data(size.split('x') if size else ['5', '5'])
+        data = kraepelin_service.prepare_test_data(size.split('x') if size else ['10', '5'])
         return data
     
     def assess_result(self, request):
