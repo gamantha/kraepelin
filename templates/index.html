@@ -15,7 +15,17 @@
         <div class="text-center">
             <button id="btn_start" type="button" class="btn btn-primary text-center">Mulai</button>
         </div>
-        <h5 class="text-center text-info" id="countdowntimer">Selamat Datang</h5>
+        <div class="timer">
+            <div class="timer-child">
+                <label for="totalcountdowntimer">Waktu Kolom Aktif:</label>
+                <h5 class="text-center text-info" id="countdowntimer">-</h5>
+            </div>
+            <div class="timer-child">
+                <label for="totalcountdowntimer">Total Waktu Tersisa:</label>
+                <h5 class="text-center text-info" id="totalcountdowntimer">-</h5>
+            </div>
+            
+        </div>
         <table class="table table-striped">
             {% set total_tab = (data|length)*(data[0]|length) + 10 %}
             {% for i in data %}
@@ -111,7 +121,8 @@
             if(toggleStart === true) {
                 toggleStart = false;
                 clearInterval(x);
-                $("#countdowntimer").html("Selamat Datang");
+                $("#countdowntimer").html("-");
+                $("#totalcountdowntimer").html("-");
                 $("#btn_start").html("Mulai");
                 $("#btn_finish").prop('disabled', true);
                 toggleInput(true);
@@ -119,11 +130,13 @@
                 toggleStart = true;
                 curr_col = 0;
                 toggleUserInput(curr_col);
-                Date.prototype.addHours= function(h){
-                    this.setHours(this.getHours()+h);
+                Date.prototype.addSeconds = function(s) {
+                    this.setSeconds(this.getSeconds()+s);
                     return this;
                 }
-                var countDownDate = new Date().addHours(1).getTime();
+                var secondLimit = 20;
+
+                var countDownDate = new Date().addSeconds(col*secondLimit).getTime();
                 // Change button label
                 $("#btn_start").html("Berhenti")
                 $("#btn_finish").prop('disabled', false);
@@ -134,14 +147,15 @@
 
                     // Find the distance between now and the count down date
                     var distance = countDownDate - now;
-                    var secondLimit = 10;
                     // Time calculations for days, hours, minutes and seconds
                     // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * secondLimit)) / 1000);
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    var seconds_column = Math.floor((distance % (1000 * secondLimit)) / 1000);
 
                     // Display the result in the element with id="demo"
-                    $("#countdowntimer").html(seconds + " detik ");
+                    $("#countdowntimer").html(seconds_column + " detik ");
+                    $("#totalcountdowntimer").html(minutes + " menit " + seconds + " detik ");
 
                     // every 20 second
                     if (seconds % secondLimit == 0) {
