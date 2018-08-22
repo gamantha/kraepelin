@@ -122,6 +122,7 @@ class KraepelinService():
                 'correct_count': correct_count,
                 'questions': questions,
                 'answers': answers,
+                'id': kraepelin.id,
             }
         except SQLAlchemyError as e:
             data = e.orig.args
