@@ -31,3 +31,16 @@ class PublicController(BaseController):
         except Exception as e:
             print(e)
             return self.error_response(e, '/assess', Http.INTERNAL_SERVER_ERROR)
+
+    def get_filled_answer(self, id):
+        """
+        Get array of result to be printed
+        """
+        if id is None:
+            return id
+        try:
+            result = kraepelin_service.get_filled_answer(id)
+            return result
+        except Exception as e:
+            print(e)
+            return None
