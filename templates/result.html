@@ -1,8 +1,47 @@
 <html>
     <head>
+        <meta charset = "UTF-8">
+        <script src = "{{ url_for('static', filename='js/gchart.min.js') }}"></script>
+        <!-- bootstrap css and js -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <!-- bootstrap css and js -->
         <title>{{ title }}</title>
     </head>
     <body>
-        <h1>Done</h1>
+        <h1 class="text-center text-warning">Hasil untuk ID: {{ result_id }}</h1>
+        <div id="barchart"></div>
     </body>
+    <script>
+        var data = JSON.parse({{ graph_data | tojson }});
+        var display_data = data.map(function(value, index) {
+            return [value.toString(), value]
+        });
+        display_data.unshift(['Terjawab', 'Baris'])
+        // gchart code
+        google.charts.load('current', {'packages':['bar']});
+        google.charts.setOnLoadCallback(drawStuff);
+
+        function drawStuff() {
+            var data = new google.visualization.arrayToDataTable(display_data);
+
+            var options = {
+            title: 'Grafik Jawaban Terjawab',
+            width: '100%',
+            legend: { position: 'none' },
+            chart: { title: 'Jawaban terjawab',
+                    subtitle: 'Jumlah jawaban yang dijawab per-kolom' },
+            bars: 'vertical', // Required for Material Bar Charts.
+            axes: {
+                x: {
+                    0: { side: 'top', label: 'Jumlah terjawab'} // Top x-axis.
+                }
+            },
+            bar: { groupWidth: "90%" }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('barchart'));
+            chart.draw(data, options);
+        };
+    </script>
 </html>
