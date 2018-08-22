@@ -74,11 +74,12 @@
                 if (!isNaN(parseFloat(value)) && isFinite(value) && value < 10) {
                     var tabindex = parseInt($(this).attr('tabIndex')) + col; 
                     $(this).attr('disabled', true);
+                    $('[tabindex=' + tabindex + ']').attr('disabled', false);
                     $('[tabindex=' + tabindex + ']').focus();
                 } else {
                     $(this).val(' ');
                 }
-            } 
+            }
         });
 
         function toggleInput(disabled, emptyFlag = true) {
@@ -103,9 +104,11 @@
             var inputs = document.getElementsByClassName('input-answer');
             
             for (var i = col_index; i < inputs.length; i+=col) { 
-                inputs[i].disabled = false;
+                if (i >= (inputs.length - col) ) {
+                    inputs[i].disabled = false;
+                    inputs[i].focus();
+                }
                 inputs[i].value = '';
-                inputs[i].focus();
             }
         }
 
