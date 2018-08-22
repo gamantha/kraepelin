@@ -33,9 +33,9 @@ class KraepelinService():
         @return result - transposed question array
         """
         result = []
-        for i in range(len(arr)):
+        for i in range(len(arr[0])):
             row = []
-            for j in range(len(arr[0])):
+            for j in range(len(arr)):
                 row.append(arr[j][i])
             result.append(row)
         return result
@@ -62,13 +62,35 @@ class KraepelinService():
         @param questions - 2d array
         @param answers - 2d array
         @return correct_count - integer
+        @return filled_answer - integer
         """
         correct_answer = 0
+        filled_answer = []
         for i in range(len(questions)):
+            filled_score = 0
             for j in range(len(answers[i])):
-                if answers[i][j] == ((questions[i][j] + questions[i][j+1]) % 10):
-                    correct_answer += 1
-        return correct_answer
+                if answers[i][j] is not None:
+                    if answers[i][j] == ((questions[i][j] + questions[i][j+1]) % 10):
+                        correct_answer += 1
+                    filled_score += 1
+            filled_answer.append(filled_score)
+        return correct_answer, filled_answer
+    
+    def calculate_filled(self, questions, answers):
+        """
+        Calculate filled
+        @param questions - 2d array
+        @param answers - 2d array
+        @return filled_count - integer
+        """
+        filled_answer = []
+        for i in range(len(questions)):
+            score = 0
+            for j in range(len(answers[i])):
+                if answers[i][j] is not None:
+                    score += 1
+            filled_answer.append(score)
+        return filled_answer
 
     def asess_test_data(self, payload):
         """
@@ -78,10 +100,11 @@ class KraepelinService():
         """
         # TODO: calculate result
         logger.info('normalizing input.')
+
         questions = self.normalize_questions(payload['questions'])
         answers = self.normalize_answers(payload['answers'], payload['questions'])
         logger.info('calculating result.')
-        correct_count = self.calculate_result(questions, answers)
+        correct_count, filled_answer = self.calculate_result(questions, answers)
         # store to database
         logger.info('begin writing to database.')
         kraepelin = Kraepelin()
@@ -90,6 +113,7 @@ class KraepelinService():
         kraepelin.questions = json.dumps(payload['questions'], separators=(',',':'))
         kraepelin.correct_count = correct_count
         kraepelin.answer_count = len(payload['answers'])
+        kraepelin.filled_count = json.dumps(filled_answer)
         db.session.add(kraepelin)
         try:
             logger.info('committing data to database.')
@@ -104,3 +128,14 @@ class KraepelinService():
             logger.warning('an error occured when writing to database: ' + data)
             raise e
     
+
+    def get_filled_answer(self, id):
+        try:
+            logger.info('getting kraepelin data with id: %d', id)
+            kraepelin = db.session.query(Kraepelin).filter_by(id=id).first()
+            data = {}
+            data = kraepelin.__dict__ if kraepelin else None
+            return data['filled_count']
+        except Exception as e:
+            logger.warning('an error occured when reading database: %s', e)
+            raise e
