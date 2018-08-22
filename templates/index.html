@@ -1,9 +1,10 @@
+<!DOCTYPE html>
 <html>
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
         <!-- bootstrap css and js -->
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
         <!-- bootstrap css and js -->
         <!-- jquery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -16,7 +17,7 @@
         </div>
         <h5 class="text-center text-info" id="countdowntimer">Selamat Datang</h5>
         <table class="table table-striped">
-            {% set total_tab = (data|length)*(data[0]|length) %}
+            {% set total_tab = (data|length)*(data[0]|length) + 10 %}
             {% for i in data %}
                 <tr class="w-">
                     {% for j in i %}
@@ -27,13 +28,13 @@
                         </td>
                     {% endfor %}
                 </tr>
-                {% if loop.index < i|length %}
+                {% if loop.index < data|length %}
                     {% set outer_loop_in = loop.index %}
                     <tr>
                         {% for k in range(i|length) %}
                             {% set inner_loop_in = loop.index %}
                             <td class="text-right">
-                                <input tabindex="{{ total_tab - (inner_loop_in + (outer_loop_in * i|length)) }}" min="0" max="9" class="text-right input-answer" type="number"/>
+                                <input tabindex="{{ total_tab - (inner_loop_in + (outer_loop_in * i|length)) }}" class="text-right input-answer" type="text"/>
                             </td>
                         {% endfor %}
                     </tr>
@@ -56,19 +57,43 @@
         $("#btn_finish").bind("click", postResult);
         toggleInput(true)
 
-        function toggleInput(disabled, emptyFlag = true) {
-            var inputs = $(".input-answer")
-            for (var i = 0; i < inputs.length; i++) { 
-                inputs[i].disabled = disabled;
-                if (emptyFlag) {
-                    inputs[i].value = '';
+        $('.input-answer').keyup(function() {
+            var value = $(this).val();
+            $(this).disabled = true;
+            if (value.length > 0) {
+                console.log('value length > 0')
+                if (!isNaN(parseFloat(value)) && isFinite(value) && value < 10) {
+                    var tabindex = parseInt($(this).attr('tabIndex')) + col; 
+                    $(this).attr('disabled', true);
+                    $('[tabindex=' + tabindex + ']').focus();
+                } else {
+                    console.log('wrong input');
+                    $(this).val(' ');
                 }
-            }
+            } 
+        });
+
+        function toggleInput(disabled, emptyFlag = true) {
+            $(".input-answer").each(function(index, item) {
+                $(item).attr('disabled', disabled);
+                if(emptyFlag) {
+                    $(item).val('');
+                }
+            });
+            // for (var i = 0; i < inputs.length; i++) { 
+            //     inputs[i].disabled = disabled;
+            //     if (emptyFlag) {
+            //         inputs[i].val('');
+            //     }
+            // }
         }
+
+
         
         function toggleUserInput(col_index) {
             toggleInput(true, false);
-            var inputs = $(".input-answer")
+            var inputs = document.getElementsByClassName('input-answer');
+            
             for (var i = col_index; i < inputs.length; i+=col) { 
                 inputs[i].disabled = false;
                 inputs[i].value = '';
@@ -78,10 +103,13 @@
 
         function fetchAnswers() {
             result = []
-            var inputs = $(".input-answer")
-            for (var i = 0; i < inputs.length; i++) { 
-                result.push(parseInt(inputs[i].value));
-            }
+            $(".input-answer").each(function(index, item) {
+                result.push(parseInt($(item).val()));
+            })
+            // for (var i = 0; i < inputs.length; i++) { 
+            //     console.log(inputs[i].val())
+            //     result.push(parseInt(inputs[i].val()));
+            // }
             return result
         }
 
@@ -112,22 +140,21 @@
 
                     // Find the distance between now and the count down date
                     var distance = countDownDate - now;
-
+                    var secondLimit = 10;
                     // Time calculations for days, hours, minutes and seconds
                     // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 20)) / 1000);
+                    var seconds = Math.floor((distance % (1000 * secondLimit)) / 1000);
 
                     // Display the result in the element with id="demo"
                     $("#countdowntimer").html(seconds + " detik ");
 
                     // every 20 second
-                    if (seconds % 20 == 0) {
-                        console.log(distance, distance%20)
+                    if (seconds % secondLimit == 0) {
                         curr_col++;
                         if (curr_col >= col) {
                             clearInterval(x);
-                            toggleInput(true);
+                            // toggleInput(true);
                             postResult();
                         }
                         toggleUserInput(curr_col);
@@ -139,6 +166,8 @@
 
         function postResult() {
             answers = fetchAnswers();
+            console.log('questions', questions);
+            console.log('answers', answers);
             $.ajax({
                 url: '/assess',
                 contentType: 'application/json',
@@ -150,7 +179,7 @@
                     user_id: '123',
                 }})
             }).done(function (data) {
-                confirm('jawaban anda telah terkumpul.');
+                alert('jawaban anda telah terkumpul.');
                 location.reload();
             }).fail(function (err) {
                 location.reload();
