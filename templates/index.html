@@ -11,6 +11,8 @@
         <title>{{title}}</title>
     </head>
     <body>
+        <!-- <embed id="beep" src="{{ url_for('static', filename='sounds/beep.wav') }}" autostart="false" width="0" height="0" 
+        enablejavascript="true"> -->
         <h1 class="text-center text-warning">Kraepelin Test</h1>
         <div class="text-center">
             <button id="btn_start" type="button" class="btn btn-primary text-center">Mulai</button>
@@ -58,6 +60,7 @@
         </div>
     </body>
     <script>
+        var audio = new Audio('static/sounds/beep.wav');
         var questions = {{ data | tojson }};
         var col = questions[0].length;
         var curr_col = -1;
@@ -165,6 +168,7 @@
                     // every 20 second
                     if (seconds % secondLimit == 0) {
                         curr_col++;
+                        audio.play();
                         if (curr_col >= col) {
                             clearInterval(x);
                             // toggleInput(true);
