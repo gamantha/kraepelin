@@ -67,15 +67,18 @@
         $("#btn_finish").bind("click", postResult);
         toggleInput(true)
 
-        $('.input-answer').keyup(function() {
+        $('.input-answer').keyup(function(e) {
             var value = $(this).val();
             $(this).disabled = true;
             if (value.length > 0) {
+
                 if (!isNaN(parseFloat(value)) && isFinite(value) && value < 10) {
-                    var tabindex = parseInt($(this).attr('tabIndex')) + col; 
-                    $(this).attr('disabled', true);
-                    $('[tabindex=' + tabindex + ']').attr('disabled', false);
-                    $('[tabindex=' + tabindex + ']').focus();
+                    if(e.which == 13) {
+                        var tabindex = parseInt($(this).attr('tabIndex')) + col; 
+                        $(this).attr('disabled', true);
+                        $('[tabindex=' + tabindex + ']').attr('disabled', false);
+                        $('[tabindex=' + tabindex + ']').focus();
+                    } 
                 } else {
                     $(this).val(' ');
                 }
