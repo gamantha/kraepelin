@@ -1,6 +1,7 @@
 from ..util.http import Http
 from .base_controller import BaseController
 from app.services import kraepelin_service
+from app.services import user_service
 
 class PublicController(BaseController):
     """
@@ -16,7 +17,7 @@ class PublicController(BaseController):
         data = kraepelin_service.prepare_test_data(size.split('x') if size else ['10', '5'])
         return data
     
-    def assess_result(self, request):
+    def assess_result(self, request, user_id):
         """
         Assess result of user answers.
         """
@@ -26,7 +27,7 @@ class PublicController(BaseController):
             return self.json_response({}, Http.UNPROCESSABLE_ENTITY)
         # calculate and store user result
         try:
-            result = kraepelin_service.asess_test_data(request.json['payload'])
+            result = kraepelin_service.asess_test_data(request.json['payload'], user_id)
             return self.json_response(result, status_code=Http.CREATED)
         except Exception as e:
             print(e)
@@ -40,6 +41,19 @@ class PublicController(BaseController):
             return id
         try:
             result = kraepelin_service.get_filled_answer(id)
+            return result
+        except Exception as e:
+            print(e)
+            return None
+
+    def get_user(self, request):
+        """
+        Get user by email
+        """
+        if 'email' in request.form == False:
+            return None
+        try:
+            result = user_service.get_user_by_email(request.form['email'])
             return result
         except Exception as e:
             print(e)
