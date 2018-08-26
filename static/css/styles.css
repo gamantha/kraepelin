@@ -22,7 +22,6 @@ h1 {
     border: 1px solid rgba(81, 203, 238, 1);
 }
 
-
 .timer {
     width: 30%;
     height: 10%;
@@ -35,4 +34,10 @@ h1 {
 .timer-child {
     display: inline-block;
     margin-left: 5%;
+}
+
+.form-login{
+    margin: 0 auto;
+    width:50%;
+    align-items: center;
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        <!-- bootstrap css and js -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <!-- bootstrap css and js -->
+        <!-- jquery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <title>{{title}}</title>
+    </head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="text-danger text-center">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form-login">
+            <h2 class="login-title text-center text-warning">Kraepelin Test</h2>
+            <form method="POST" action="/login">
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Masukkan email">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
