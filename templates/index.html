@@ -71,7 +71,6 @@
             var value = $(this).val();
             $(this).disabled = true;
             if (value.length > 0) {
-
                 if (!isNaN(parseFloat(value)) && isFinite(value) && value < 10) {
                     if(e.which == 13) {
                         var tabindex = parseInt($(this).attr('tabIndex')) + col; 
@@ -188,7 +187,6 @@
                 data: JSON.stringify({payload: {
                     questions,
                     answers,
-                    user_id: '123',
                 }})
             }).done(function (data) {
                 alert('jawaban anda telah terkumpul.');
