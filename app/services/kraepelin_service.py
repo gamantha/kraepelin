@@ -92,7 +92,7 @@ class KraepelinService():
             filled_answer.append(score)
         return filled_answer
 
-    def asess_test_data(self, payload):
+    def asess_test_data(self, payload, user_id):
         """
         Asess test result.
         @param payload - pauload dictionary
@@ -108,7 +108,7 @@ class KraepelinService():
         # store to database
         logger.info('begin writing to database.')
         kraepelin = Kraepelin()
-        kraepelin.user_id = payload['user_id']
+        kraepelin.user_id = user_id
         kraepelin.answers = json.dumps(payload['answers'], separators=(',',':'))
         kraepelin.questions = json.dumps(payload['questions'], separators=(',',':'))
         kraepelin.correct_count = correct_count
