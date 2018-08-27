@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
         <!-- bootstrap css and js -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
@@ -11,22 +11,30 @@
         <title>{{title}}</title>
     </head>
     <body>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <p class="text-danger text-center">{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <div class="form-login">
-            <h2 class="login-title text-center text-warning">Kraepelin Test</h2>
-            <form method="POST" action="/login">
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Masukkan email">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="container">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="text-warning font-weight-bold text-center">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <div class="row" id="pwd-container">
+                  <div class="col-md-4"></div>
+                  <div class="col-md-4">
+                    <section class="login-form">
+                      <form method="POST" action="/login" role="login">
+                        <h3 class="text-center">Kraepelin</h3>
+                        <input type="email" name="email" placeholder="Email" required class="form-control input-lg" />
+
+                        <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Masuk</button>
+                      </form>
+                      <div class="form-links">
+                        <a href="#">kraepelin.ppsdm.com</a>
+                      </div>
+                    </section>
+                    </div>
+                    <div class="col-md-4"></div>
                 </div>
-            </form>
-        </div>
     </body>
 </html>
