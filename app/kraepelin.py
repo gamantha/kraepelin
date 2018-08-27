@@ -17,8 +17,6 @@ def create_app(configuration):
     # logging_tree.printout()
     app.logger.info('Starting Flask app %s...', __name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
-    # set configuration
-    app.config.from_object(configuration)
     # register blueprint
     app.register_blueprint(public_routes)
     return app
