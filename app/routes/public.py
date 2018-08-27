@@ -16,9 +16,11 @@ def post_login():
     if result is None:
         flash('email yang anda masukkan salah atau belum terdaftar.')
         return redirect(url_for('public.login_page'))
+    elif result['quota'] <= 0:
+        flash('kuota test anda habis, silahkan hubungi admin.')
+        return redirect(url_for('public.login_page'))
     session['user_id'] = result['id']
     return redirect(url_for('public.execute_kraepelin_test'))
-
 
 @public_routes.route('/test', methods=['GET'])
 @login_required
