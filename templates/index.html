@@ -11,9 +11,7 @@
         <title>{{title}}</title>
     </head>
     <body>
-        <!-- <embed id="beep" src="{{ url_for('static', filename='sounds/beep.wav') }}" autostart="false" width="0" height="0" 
-        enablejavascript="true"> -->
-        <h1 class="text-center text-warning">Kraepelin Test</h1>
+        <h1 class="title-text text-center">Kraepelin Test</h1>
         <div class="text-center">
             <button id="btn_start" type="button" class="btn btn-primary text-center">Mulai</button>
         </div>
@@ -34,7 +32,7 @@
                 <tr class="w-">
                     {% for j in i %}
                         <td class="text-center">
-                            <span class="question-point">
+                            <span class="font-weight-bold question-point">
                                 {{ j }}
                             </span>
                         </td>
@@ -77,7 +75,7 @@
                 if (!isNaN(parseFloat(value)) && isFinite(value) && value < 10) {
                     if(e.which == 13) {
                         var tabindex = parseInt($(this).attr('tabIndex')) + col; 
-                        $(this).attr('disabled', true);
+                        // $(this).attr('disabled', true);
                         $('[tabindex=' + tabindex + ']').attr('disabled', false);
                         $('[tabindex=' + tabindex + ']').focus();
                     } 
