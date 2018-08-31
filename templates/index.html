@@ -58,6 +58,8 @@
         </table>
     </body>
     <script>
+        var starttime;
+        var endtime;
         var audio = new Audio('static/sounds/beep.wav');
         var questions = {{ data | tojson }};
         var col = questions[0].length;
@@ -133,6 +135,7 @@
                 $("#btn_finish").prop('disabled', true);
                 toggleInput(true);
             } else {
+                starttime = new Date().toUTCString()
                 toggleStart = true;
                 curr_col = 0;
                 toggleUserInput(curr_col);
@@ -189,6 +192,8 @@
                 data: JSON.stringify({payload: {
                     questions,
                     answers,
+                    starttime,
+                    endtime: new Date().toUTCString()
                 }})
             }).done(function (data) {
                 alert('jawaban anda telah terkumpul.');
