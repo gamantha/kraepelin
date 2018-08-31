@@ -4,6 +4,7 @@ from flask import json
 from sqlalchemy.exc import SQLAlchemyError
 from app.models import db
 from app.models.kraepelin import Kraepelin
+from app.models.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -12,16 +13,27 @@ class KraepelinService():
     All kraepelin data logic service.
     """
 
-    def prepare_test_data(self, size):
+    def prepare_test_data(self):
         """
         Prepare all test data
         @param size - size array [x, y]
         return dict
         """
+        # kraepelin_size = size.split('x') if size else ['10', '5']
+        size = [10, 5]
+        try:
+            conf = db.session.query(Config).first()
+            if conf is None:
+                logger.error("configuration is not set, fallback to default configuration")
+            else:
+                size = [conf.row, conf.column]
+        except Exception as e:
+            logger.error('an error occured when reading configuration in database: %s', e)
+            raise e
         result = []
-        for i in range(int(size[0])):
+        for i in range(size[0]):
             temp_arr = []
-            for j in range(int(size[1])):
+            for j in range(size[1]):
                 temp_arr.append(random.randint(1, 10))
             result.append(temp_arr)
         return result
