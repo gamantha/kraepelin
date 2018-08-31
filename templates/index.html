@@ -11,6 +11,10 @@
         <title>{{title}}</title>
     </head>
     <body>
+
+        <div class="logout">
+            <a href="/logout" class="btn btn-danger">logout</a>
+        </div>
         <h1 class="title-text text-center">Kraepelin Test</h1>
         <div class="text-center">
             <button id="btn_start" type="button" class="btn btn-primary text-center">Mulai</button>
@@ -24,7 +28,6 @@
                 <label for="totalcountdowntimer">Total Waktu Tersisa:</label>
                 <h5 class="text-center text-info" id="totalcountdowntimer">-</h5>
             </div>
-            
         </div>
         <table class="table table-striped">
             {% set total_tab = (data|length)*(data[0]|length) + 10 %}
@@ -53,9 +56,6 @@
             {% endfor %}
 
         </table>
-        <div class="text-center">
-            <button id="btn_finish" disabled class="btn btn-primary">Selesai</button>
-        </div>
     </body>
     <script>
         var audio = new Audio('static/sounds/beep.wav');
