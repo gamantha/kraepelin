@@ -9,6 +9,11 @@ def login_page():
     # get login page
     return render_template('login.html', title='Login')
 
+@public_routes.route('/logout', methods=['GET'])
+def logout():
+    session.clear()
+    return redirect(url_for('public.login_page'))
+
 @public_routes.route('/login', methods=['POST'])
 def post_login():
     # post login information
@@ -27,6 +32,10 @@ def post_login():
 def execute_kraepelin_test(*args, **kwargs):
     # generate random value n*n
     data = public_controller.index(request)
+    if data is None:
+        flash("Tes belum dikonfigurasi, silahkan hubungi admin.")
+        session.clear()
+        redirect(url_for('public.login_page'))
     return render_template('index.html', title='Home', data=data)
 
 @public_routes.route('/assess', methods=['POST'])
