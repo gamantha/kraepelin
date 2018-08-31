@@ -1,11 +1,41 @@
+body {
+	background: url(http://i.imgur.com/GHr12sH.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
 h1 {
     color: aquamarine;
 }
 
+.title-text {
+    color: #ffffff;
+}
+
+.timer {
+    left: 0 !important;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.logout {
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
 .table {
+    color: antiquewhite;
+    margin-top: 40px;
     border-radius: 5px;
     width: 50%;
     float: none;
+}
+
+table td {
+    border-top: none !important;
 }
 
 .input-answer {
