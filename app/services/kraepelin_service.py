@@ -1,3 +1,4 @@
+import datetime
 import random
 import logging
 from flask import json
@@ -126,6 +127,9 @@ class KraepelinService():
         kraepelin.correct_count = correct_count
         kraepelin.answer_count = len(payload['answers'])
         kraepelin.filled_count = json.dumps(filled_answer)
+        kraepelin.starttime = datetime.datetime.strptime(payload['starttime'], "%a, %d %b %Y %H:%M:%S %Z")
+        kraepelin.endtime = datetime.datetime.strptime(payload['endtime'], "%a, %d %b %Y %H:%M:%S %Z")
+        
         db.session.add(kraepelin)
         try:
             logger.info('committing data to database.')
