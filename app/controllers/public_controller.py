@@ -13,9 +13,11 @@ class PublicController(BaseController):
         Index path of public routes
         Generate needed data for displaying on front page.
         """
-        size = request.args.get('size')
-        data = kraepelin_service.prepare_test_data(size.split('x') if size else ['10', '5'])
-        return data
+        try:
+            data = kraepelin_service.prepare_test_data()
+            return data
+        except Exception as e:
+            return None
     
     def assess_result(self, request, user_id):
         """
