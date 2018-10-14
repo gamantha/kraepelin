@@ -1,207 +1,211 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-        <!-- bootstrap css and js -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        <!-- bootstrap css and js -->
-        <!-- jquery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <title>{{title}}</title>
-    </head>
-    <body>
 
-        <div class="logout">
-            <a href="/logout" class="btn btn-danger">logout</a>
-        </div>
-        <h1 class="title-text text-center">Kraepelin Test</h1>
-        <div class="text-center">
-            <button id="btn_start" type="button" class="btn btn-primary text-center">Mulai</button>
-        </div>
-        <div class="timer">
-            <div class="timer-child">
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- bootstrap css and js -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- bootstrap css and js -->
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>{{title}}</title>
+</head>
+
+<body>
+
+    <div class="logout">
+        <a href="/logout" class="btn btn-danger">logout</a>
+    </div>
+    <h1 class="title-text text-center">Kraepelin Test</h1>
+    <div class="text-center">
+        <button id="btn_start" type="button" class="btn btn-primary text-center">Mulai</button>
+    </div>
+    <div class="timer">
+        <!-- <div class="timer-child">
                 <label for="totalcountdowntimer">Waktu Kolom Aktif:</label>
                 <h5 class="text-center text-info" id="countdowntimer">-</h5>
             </div>
             <div class="timer-child">
                 <label for="totalcountdowntimer">Total Waktu Tersisa:</label>
                 <h5 class="text-center text-info" id="totalcountdowntimer">-</h5>
-            </div>
-        </div>
-        <table class="table table-striped">
-            {% set total_tab = (data|length)*(data[0]|length) + 10 %}
-            {% for i in data %}
-                <tr class="w-">
-                    {% for j in i %}
-                        <td class="text-center">
-                            <span class="font-weight-bold question-point">
-                                {{ j }}
-                            </span>
-                        </td>
-                    {% endfor %}
-                </tr>
-                {% if loop.index < data|length %}
-                    {% set outer_loop_in = loop.index %}
-                    <tr>
-                        {% for k in range(i|length) %}
-                            {% set inner_loop_in = loop.index %}
-                            <td class="text-right">
-                                <input tabindex="{{ total_tab - (inner_loop_in + (outer_loop_in * i|length)) }}" class="text-right input-answer" type="text"/>
-                            </td>
-                        {% endfor %}
-                    </tr>
-                {% endif %}
+            </div> -->
+    </div>
+    <table class="table table-striped">
+        {% set total_tab = (data|length)*(data[0]|length) + 10 %}
+        {% for i in data %}
+        <tr class="w-">
+            {% for j in i %}
+            <td class="text-center">
+                <span class="font-weight-bold question-point">
+                    {{ j }}
+                </span>
+            </td>
+            {% endfor %}
+        </tr>
+        {% if loop.index < data|length %} {% set outer_loop_in=loop.index %} <tr>
+            {% for k in range(i|length) %}
+            {% set inner_loop_in = loop.index %}
+            <td class="text-right">
+                <input tabindex="{{ total_tab - (inner_loop_in + (outer_loop_in * i|length)) }}" class="text-right input-answer"
+                    type="text" />
+            </td>
+            {% endfor %}
+            </tr>
+            {% endif %}
 
             {% endfor %}
 
-        </table>
-    </body>
-    <script>
-        var starttime;
-        var endtime;
-        var audio = new Audio('static/sounds/beep.wav');
-        var questions = {{ data | tojson }};
-        var col = questions[0].length;
-        var curr_col = -1;
-        var toggleStart = false;
-        var x;
-        $("#btn_start").bind("click", startTimer);
-        $("#btn_finish").bind("click", postResult);
-        toggleInput(true)
+    </table>
+</body>
+<script>
+    var starttime;
+    var endtime;
+    var audio = new Audio('static/sounds/beep.wav');
+    var questions = {{ data | tojson }};
+    var col = questions[0].length;
+    var curr_col = -1;
+    var toggleStart = false;
+    var x;
+    $("#btn_start").bind("click", startTimer);
+    $("#btn_finish").bind("click", postResult);
+    toggleInput(true)
 
-        $('.input-answer').keyup(function(e) {
-            var value = $(this).val();
-            $(this).disabled = true;
-            if (value.length > 0) {
-                if (!isNaN(parseFloat(value)) && isFinite(value) && value < 10) {
-                    if(e.which == 13) {
-                        var tabindex = parseInt($(this).attr('tabIndex')) + col; 
-                        // $(this).attr('disabled', true);
-                        $('[tabindex=' + tabindex + ']').attr('disabled', false);
-                        $('[tabindex=' + tabindex + ']').focus();
-                    } 
-                } else {
-                    $(this).val(' ');
+    $('.input-answer').keyup(function (e) {
+        var value = $(this).val();
+        $(this).disabled = true;
+        $(this).css('cssText', 'background-color: #68f970 !important');
+        if (value.length > 0) {
+            if (!isNaN(parseFloat(value)) && isFinite(value) && value < 10) {
+                if (e.which == 13) {
+                    var tabindex = parseInt($(this).attr('tabIndex')) + col;
+                    // $(this).attr('css', {backgroundColor: 'green'});
+                    $('[tabindex=' + tabindex + ']').attr('disabled', false);
+                    $('[tabindex=' + tabindex + ']').focus();
                 }
-            }
-        });
-
-        function toggleInput(disabled, emptyFlag = true) {
-            $(".input-answer").each(function(index, item) {
-                $(item).attr('disabled', disabled);
-                if(emptyFlag) {
-                    $(item).val('');
-                }
-            });
-        }
-
-        $(':input').focus(function(){
-            var center = $(window).height()/2;
-            var top = $(this).offset().top ;
-            if (top > center){
-                $(window).scrollTop(top-center);
-            }
-        });
-        
-        function toggleUserInput(col_index) {
-            toggleInput(true, false);
-            var inputs = document.getElementsByClassName('input-answer');
-            
-            for (var i = col_index; i < inputs.length; i+=col) { 
-                if (i >= (inputs.length - col) ) {
-                    inputs[i].disabled = false;
-                    inputs[i].focus();
-                }
-                inputs[i].value = '';
-            }
-        }
-
-        function fetchAnswers() {
-            result = []
-            $(".input-answer").each(function(index, item) {
-                result.push(parseInt($(item).val()));
-            })
-            return result
-        }
-
-        function startTimer() {
-            if(toggleStart === true) {
-                toggleStart = false;
-                clearInterval(x);
-                $("#countdowntimer").html("-");
-                $("#totalcountdowntimer").html("-");
-                $("#btn_start").html("Mulai");
-                $("#btn_finish").prop('disabled', true);
-                toggleInput(true);
             } else {
-                starttime = new Date().toUTCString()
-                toggleStart = true;
-                curr_col = 0;
-                toggleUserInput(curr_col);
-                Date.prototype.addSeconds = function(s) {
-                    this.setSeconds(this.getSeconds()+s);
-                    return this;
-                }
-                var secondLimit = 20;
-
-                var countDownDate = new Date().addSeconds(col*secondLimit).getTime();
-                // Change button label
-                $("#btn_start").html("Berhenti")
-                $("#btn_finish").prop('disabled', false);
-                // Update the count down every 1 second
-                x = setInterval(function() {
-                    // Get todays date and time
-                    var now = new Date().getTime();
-
-                    // Find the distance between now and the count down date
-                    var distance = countDownDate - now;
-                    // Time calculations for days, hours, minutes and seconds
-                    // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    var seconds_column = Math.floor((distance % (1000 * secondLimit)) / 1000);
-
-                    // Display the result in the element with id="demo"
-                    $("#countdowntimer").html(seconds_column + " detik ");
-                    $("#totalcountdowntimer").html(minutes + " menit " + seconds + " detik ");
-
-                    // every 20 second
-                    if (seconds % secondLimit == 0) {
-                        curr_col++;
-                        audio.play();
-                        if (curr_col >= col) {
-                            clearInterval(x);
-                            // toggleInput(true);
-                            postResult();
-                        }
-                        toggleUserInput(curr_col);
-                    }
-                }, 1000);
+                $(this).val(' ');
             }
+        }
+    });
 
+    function toggleInput(disabled, emptyFlag = true) {
+        $(".input-answer").each(function (index, item) {
+            $(item).attr('disabled', disabled);
+            if (emptyFlag) {
+                $(item).val('');
+            }
+        });
+    }
+
+    $(':input').focus(function () {
+        var center = $(window).height() / 2;
+        var top = $(this).offset().top;
+        if (top > center) {
+            $(window).scrollTop(top - center);
+        }
+    });
+
+    function toggleUserInput(col_index) {
+        toggleInput(true, false);
+        var inputs = document.getElementsByClassName('input-answer');
+
+        for (var i = col_index; i < inputs.length; i += col) {
+            if (i >= (inputs.length - col)) {
+                inputs[i].disabled = false;
+                inputs[i].focus();
+            }
+            inputs[i].value = '';
+        }
+    }
+
+    function fetchAnswers() {
+        result = []
+        $(".input-answer").each(function (index, item) {
+            result.push(parseInt($(item).val()));
+        })
+        return result
+    }
+
+    function startTimer() {
+        if (toggleStart === true) {
+            toggleStart = false;
+            clearInterval(x);
+            $("#countdowntimer").html("-");
+            $("#totalcountdowntimer").html("-");
+            $("#btn_start").html("Mulai");
+            $("#btn_finish").prop('disabled', true);
+            toggleInput(true);
+        } else {
+            starttime = new Date().toUTCString()
+            toggleStart = true;
+            curr_col = 0;
+            toggleUserInput(curr_col);
+            Date.prototype.addSeconds = function (s) {
+                this.setSeconds(this.getSeconds() + s);
+                return this;
+            }
+            var secondLimit = 20;
+
+            var countDownDate = new Date().addSeconds(col * secondLimit).getTime();
+            // Change button label
+            $("#btn_start").html("Berhenti")
+            $("#btn_finish").prop('disabled', false);
+            // Update the count down every 1 second
+            x = setInterval(function () {
+                // Get todays date and time
+                var now = new Date().getTime();
+
+                // Find the distance between now and the count down date
+                var distance = countDownDate - now;
+                // Time calculations for days, hours, minutes and seconds
+                // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                var seconds_column = Math.floor((distance % (1000 * secondLimit)) / 1000);
+
+                // Display the result in the element with id="demo"
+                $("#countdowntimer").html(seconds_column + " detik ");
+                $("#totalcountdowntimer").html(minutes + " menit " + seconds + " detik ");
+
+                // every 20 second
+                if (seconds % secondLimit == 0) {
+                    curr_col++;
+                    audio.play();
+                    if (curr_col >= col) {
+                        clearInterval(x);
+                        // toggleInput(true);
+                        postResult();
+                    }
+                    toggleUserInput(curr_col);
+                }
+            }, 1000);
         }
 
-        function postResult() {
-            answers = fetchAnswers();
-            $.ajax({
-                url: '/assess',
-                contentType: 'application/json',
-                accepts: 'application/json',
-                method: 'POST',
-                data: JSON.stringify({payload: {
+    }
+
+    function postResult() {
+        answers = fetchAnswers();
+        $.ajax({
+            url: '/assess',
+            contentType: 'application/json',
+            accepts: 'application/json',
+            method: 'POST',
+            data: JSON.stringify({
+                payload: {
                     questions,
                     answers,
                     starttime,
                     endtime: new Date().toUTCString()
-                }})
-            }).done(function (data) {
-                alert('jawaban anda telah terkumpul.');
-                window.location.href = '/assess_result/' + data.id;
-            }).fail(function (err) {
-                location.reload();
+                }
             })
-        }
-    </script>
+        }).done(function (data) {
+            alert('jawaban anda telah terkumpul.');
+            window.location.href = '/assess_result/' + data.id;
+        }).fail(function (err) {
+            location.reload();
+        })
+    }
+</script>
 
 </html>

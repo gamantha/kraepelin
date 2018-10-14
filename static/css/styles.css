@@ -52,6 +52,10 @@ table td {
     border: 1px solid rgba(81, 203, 238, 1);
 }
 
+input[type=text]:focus {
+    background-color: aquamarine;
+}
+
 .timer {
     width: 30%;
     height: 10%;
