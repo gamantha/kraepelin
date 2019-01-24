@@ -10,37 +10,37 @@
     </head>
     <body>
         <h1 class="text-center text-warning">Hasil untuk ID: {{ result_id }}</h1>
-        <div id="barchart"></div>
+        <div id="linechart"></div>
     </body>
     <script>
-        var data = JSON.parse({{ graph_data | tojson }});
-        var display_data = data.map(function(value, index) {
-            return [value.toString(), value]
-        });
-        display_data.unshift(['Terjawab', 'Baris'])
-        // gchart code
-        google.charts.load('current', {'packages':['bar']});
+        var answers = JSON.parse({{ graph_data | tojson }});
+        google.charts.load('current', {'packages':['corechart', 'line']});
         google.charts.setOnLoadCallback(drawStuff);
 
         function drawStuff() {
-            var data = new google.visualization.arrayToDataTable(display_data);
-
+            var data = new google.visualization.DataTable();
+            data.addColumn('number', 'x');
+            data.addColumn('number', 'jumlah terjawab');
+            var result = [];
+            answers.map((v, i) => {
+                result.push([i, v])
+            })
+            data.addRows(result)
             var options = {
-            title: 'Grafik Jawaban Terjawab',
-            width: '100%',
-            legend: { position: 'none' },
-            chart: { title: 'Jawaban terjawab',
-                    subtitle: 'Jumlah jawaban yang dijawab per-kolom' },
-            bars: 'vertical', // Required for Material Bar Charts.
-            axes: {
-                x: {
-                    0: { side: 'top', label: 'Jumlah terjawab'} // Top x-axis.
+                title: 'Grafik Jawaban Terjawab',
+                width: '100%',
+                legend: { position: 'none' },
+                chart: { title: 'Jawaban terjawab',
+                        subtitle: 'Jumlah jawaban yang dijawab per-kolom' },
+                hAxis: {
+                    title: 'kolom'
+                },
+                vAxis: {
+                    title: 'terjawab'
                 }
-            },
-            bar: { groupWidth: "90%" }
             };
 
-            var chart = new google.charts.Bar(document.getElementById('barchart'));
+            var chart = new google.visualization.LineChart(document.getElementById('linechart'));
             chart.draw(data, options);
         };
     </script>
