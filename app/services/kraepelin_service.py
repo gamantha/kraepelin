@@ -21,7 +21,7 @@ class KraepelinService():
         return dict
         """
         # kraepelin_size = size.split('x') if size else ['10', '5']
-        size = [10, 5]
+        size = [61, 45]
         try:
             conf = db.session.query(Config).first()
             if conf is None:
