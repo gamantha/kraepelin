@@ -10,23 +10,38 @@
     </head>
     <body>
         <h1 class="text-center text-warning">Hasil untuk ID: {{ result_id }}</h1>
-        <div id="linechart"></div>
+        <div id="filledlinechart"></div>
+        <div id="unfilledlinechart"></div>
+        <div id="correctlinechart"></div>
+        <div id="incorrectlinechart"></div>
     </body>
     <script>
-        var answers = JSON.parse({{ graph_data | tojson }});
+        var filled_count = JSON.parse({{ graph_data.filled_count | tojson }});
+        var unfilled_count = JSON.parse({{ graph_data.unfilled_count | tojson }});
+        var correct_count = JSON.parse({{ graph_data.correct_count | tojson }});
+        var incorrect_count = JSON.parse({{ graph_data.incorrect_count | tojson }});
+
         google.charts.load('current', {'packages':['corechart', 'line']});
         google.charts.setOnLoadCallback(drawStuff);
 
         function drawStuff() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('number', 'x');
-            data.addColumn('number', 'jumlah terjawab');
-            var result = [];
-            answers.map((v, i) => {
-                result.push([i, v])
+            resultFilled = [];
+            resultUnfilled = [];
+            resultCorrect = [];
+            resultIncorrect = [];
+
+            filled_count.map((v, i) => {
+                resultFilled.push([i, v]);
+                resultUnfilled.push([i, unfilled_count[i]])
+                resultCorrect.push([i, correct_count[i]])
+                resultIncorrect.push([i, incorrect_count[i]])
             })
-            data.addRows(result)
-            var options = {
+
+            var filledData = new google.visualization.DataTable();
+            filledData.addColumn('number', 'x');
+            filledData.addColumn('number', 'jumlah');
+            filledData.addRows(resultFilled);
+            var filledOptions = {
                 title: 'Grafik Jawaban Terjawab',
                 width: '100%',
                 legend: { position: 'none' },
@@ -36,12 +51,77 @@
                     title: 'kolom'
                 },
                 vAxis: {
-                    title: 'terjawab'
-                }
+                    title: 'jumlah terjawab'
+                },
+                colors: ['green']
             };
 
-            var chart = new google.visualization.LineChart(document.getElementById('linechart'));
-            chart.draw(data, options);
+            // correct answers
+            var correctData = new google.visualization.DataTable();
+            correctData.addColumn('number', 'x');
+            correctData.addColumn('number', 'jumlah');
+            correctData.addRows(resultCorrect)
+            var correctOptions = {
+                title: 'Grafik Jawaban Terjawab Benar',
+                width: '100%',
+                legend: { position: 'none' },
+                chart: { title: 'Jawaban Benar',
+                        subtitle: 'Jumlah jawaban yang dijawab benar per-kolom' },
+                hAxis: {
+                    title: 'kolom'
+                },
+                vAxis: {
+                    title: 'jumlah terjawab benar'
+                },
+                colors: ['green']
+            };
+            // unfilled data
+            var unfilledData = new google.visualization.DataTable();
+            unfilledData.addColumn('number', 'x');
+            unfilledData.addColumn('number', 'jumlah');
+            unfilledData.addRows(resultUnfilled)
+            var unfilledOptions = {
+                title: 'Grafik Jawaban Tidak Terjawab',
+                width: '100%',
+                legend: { position: 'none' },
+                chart: { title: 'Jawaban tak terjawab',
+                        subtitle: 'Jumlah jawaban yang tidak dijawab per-kolom' },
+                hAxis: {
+                    title: 'kolom'
+                },
+                vAxis: {
+                    title: 'jumlah tidak terjawab'
+                },
+                colors: ['red']
+            };
+            // incorrect answers
+            var incorrectData = new google.visualization.DataTable();
+            incorrectData.addColumn('number', 'x');
+            incorrectData.addColumn('number', 'jumlah');
+            incorrectData.addRows(resultIncorrect)
+            var incorrectOptions = {
+                title: 'Grafik Jawaban Terjawab Salah',
+                width: '100%',
+                legend: { position: 'none' },
+                chart: { title: 'Jawaban Salah',
+                        subtitle: 'Jumlah jawaban yang dijawab salah per-kolom' },
+                hAxis: {
+                    title: 'kolom'
+                },
+                vAxis: {
+                    title: 'jumlah terjawab salah'
+                },
+                colors: ['red']
+            };
+
+            var filledChart = new google.visualization.LineChart(document.getElementById('filledlinechart'));
+            var unfilledChart = new google.visualization.LineChart(document.getElementById('unfilledlinechart'));
+            var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
+            var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
+            filledChart.draw(filledData, filledOptions);
+            unfilledChart.draw(unfilledData, unfilledOptions);
+            correctChart.draw(correctData, correctOptions);
+            incorrectChart.draw(incorrectData, incorrectOptions);
         };
     </script>
 </html>
