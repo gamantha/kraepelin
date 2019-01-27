@@ -14,6 +14,10 @@
         <div id="unfilledlinechart"></div>
         <div id="correctlinechart"></div>
         <div id="incorrectlinechart"></div>
+        Puncak tertinggi di baris ke:
+        <p id="puncakTinggi"></p>
+        Puncak terendah di baris ke:
+        <p id="puncakRendah"></p>
     </body>
     <script>
         var filled_count = JSON.parse({{ graph_data.filled_count | tojson }});
@@ -118,6 +122,8 @@
             var unfilledChart = new google.visualization.LineChart(document.getElementById('unfilledlinechart'));
             var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
             var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
+            document.getElementById("puncakTinggi").innerHTML = filled_count.indexOf(Math.max(...filled_count)) + 1;
+            document.getElementById("puncakRendah").innerHTML = filled_count.indexOf(Math.min(...filled_count)) + 1
             filledChart.draw(filledData, filledOptions);
             unfilledChart.draw(unfilledData, unfilledOptions);
             correctChart.draw(correctData, correctOptions);
