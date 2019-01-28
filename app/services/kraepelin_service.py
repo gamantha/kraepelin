@@ -78,16 +78,20 @@ class KraepelinService():
         @return incorrect_count - integer
         @return filled_answer - integer
         @return unfilled_answer - integer
+        @return minute_count - integer
         """
         correct_answer = []
         incorrect_answer = []
         filled_answer = []
         unfilled_answer = []
+        minute_count = []
         for i in range(len(questions)):
             filled_score = 0
             correct_score = 0
             incorrect_score = 0
             unfilled_score = 0
+            if (i%2 == 0):
+                minute_score = 0
             for j in range(len(answers[i])):
                 if answers[i][j] is not None:
                     if answers[i][j] == ((questions[i][j] + questions[i][j+1]) % 10):
@@ -95,13 +99,16 @@ class KraepelinService():
                     else:
                         incorrect_score += 1
                     filled_score += 1
+                    minute_score += 1
                 else:
                     unfilled_score += 1
             filled_answer.append(filled_score)
             unfilled_answer.append(unfilled_score)
             correct_answer.append(correct_score)
             incorrect_answer.append(incorrect_score)
-        return correct_answer, incorrect_answer, filled_answer, unfilled_answer
+            if (i%2 == 0):
+                minute_count.append(minute_score)
+        return correct_answer, incorrect_answer, filled_answer, unfilled_answer, minute_count
     
     def calculate_filled(self, questions, answers):
         """
@@ -131,7 +138,7 @@ class KraepelinService():
         questions = self.normalize_questions(payload['questions'])
         answers = self.normalize_answers(payload['answers'], payload['questions'])
         logger.info('calculating result.')
-        correct_count, incorrect_count, filled_answer, unfilled_answer = self.calculate_result(questions, answers)
+        correct_count, incorrect_count, filled_answer, unfilled_answer, minute_count = self.calculate_result(questions, answers)
         # store to database
         logger.info('begin writing to database.')
         kraepelin = Kraepelin()
@@ -139,6 +146,7 @@ class KraepelinService():
         kraepelin.answers = json.dumps(payload['answers'], separators=(',',':'))
         kraepelin.questions = json.dumps(payload['questions'], separators=(',',':'))
         kraepelin.correct_count = json.dumps(correct_count)
+        kraepelin.minute_count = json.dumps(minute_count)
         kraepelin.incorrect_count = json.dumps(incorrect_count)
         kraepelin.answer_count = len(payload['answers'])
         kraepelin.filled_count = json.dumps(filled_answer)
@@ -172,7 +180,8 @@ class KraepelinService():
                 'filled_count': data['filled_count'],
                 'unfilled_count': data['unfilled_count'],
                 'incorrect_count': data['incorrect_count'],
-                'correct_count': data['correct_count']
+                'correct_count': data['correct_count'],
+                'minute_count': data['minute_count']
             }
         except Exception as e:
             logger.warning('an error occured when reading database: %s', e)
