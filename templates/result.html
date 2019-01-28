@@ -14,16 +14,20 @@
         <div id="unfilledlinechart"></div>
         <div id="correctlinechart"></div>
         <div id="incorrectlinechart"></div>
+        <div id="minutelinechart"></div>
         Puncak tertinggi di baris ke:
         <p id="puncakTinggi"></p>
         Puncak terendah di baris ke:
         <p id="puncakRendah"></p>
+        Rata - rata tiap menit:
+        <p id="rataMenit"></p>
     </body>
     <script>
         var filled_count = JSON.parse({{ graph_data.filled_count | tojson }});
         var unfilled_count = JSON.parse({{ graph_data.unfilled_count | tojson }});
         var correct_count = JSON.parse({{ graph_data.correct_count | tojson }});
         var incorrect_count = JSON.parse({{ graph_data.incorrect_count | tojson }});
+        var minute_count = JSON.parse({{ graph_data.minute_count | tojson }});
 
         google.charts.load('current', {'packages':['corechart', 'line']});
         google.charts.setOnLoadCallback(drawStuff);
@@ -33,12 +37,14 @@
             resultUnfilled = [];
             resultCorrect = [];
             resultIncorrect = [];
+            resultMinute = [];
 
             filled_count.map((v, i) => {
                 resultFilled.push([i, v]);
                 resultUnfilled.push([i, unfilled_count[i]])
                 resultCorrect.push([i, correct_count[i]])
                 resultIncorrect.push([i, incorrect_count[i]])
+                resultMinute.push([i, minute_count[i]])
             })
 
             var filledData = new google.visualization.DataTable();
@@ -118,16 +124,41 @@
                 colors: ['red']
             };
 
+            // minute answers
+            var minuteData = new google.visualization.DataTable();
+            minuteData.addColumn('number', 'x');
+            minuteData.addColumn('number', 'jumlah');
+            minuteData.addRows(resultMinute)
+            var minuteOptions = {
+                title: 'Grafik Jawaban Terjawab Per menit',
+                width: '100%',
+                legend: { position: 'none' },
+                chart: { title: 'Jawaban terjawab',
+                        subtitle: 'Jumlah jawaban yang dijawab per menit' },
+                hAxis: {
+                    title: 'menit'
+                },
+                vAxis: {
+                    title: 'jumlah terjawab'
+                },
+                colors: ['blue']
+            };
+
             var filledChart = new google.visualization.LineChart(document.getElementById('filledlinechart'));
             var unfilledChart = new google.visualization.LineChart(document.getElementById('unfilledlinechart'));
             var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
             var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
+            var minuteChart = new google.visualization.LineChart(document.getElementById('minutelinechart'));
             document.getElementById("puncakTinggi").innerHTML = filled_count.indexOf(Math.max(...filled_count)) + 1;
             document.getElementById("puncakRendah").innerHTML = filled_count.indexOf(Math.min(...filled_count)) + 1
+            var jumlahMenit = minute_count.reduce((a, b) => a + b)
+            var rataMenit = jumlahMenit / minute_count.length
+            document.getElementById("rataMenit").innerHTML = rataMenit
             filledChart.draw(filledData, filledOptions);
             unfilledChart.draw(unfilledData, unfilledOptions);
             correctChart.draw(correctData, correctOptions);
             incorrectChart.draw(incorrectData, incorrectOptions);
+            minuteChart.draw(minuteData, minuteOptions);
         };
     </script>
 </html>
