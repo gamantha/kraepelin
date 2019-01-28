@@ -16,6 +16,7 @@ class Kraepelin(db.Model):
     correct_count = db.Column(db.Text)
     incorrect_count = db.Column(db.Text)
     answer_count = db.Column(db.Integer)
+    minute_count = db.Column(db.Text)
     filled_count = db.Column(db.Text)
     unfilled_count = db.Column(db.Text)
     starttime = db.Column(db.DateTime)
