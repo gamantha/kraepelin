@@ -1,17 +1,19 @@
 from datetime import datetime, timedelta
+from sqlalchemy.orm import relationship
 from app.models import db
 
 class User(db.Model):
     """
     User table model
     """
-
+    __bind_key__ = 'user'
     # override default table name
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255))
-    quota = db.Column(db.Integer, default=0)
+    salt = db.Column(db.String(255))
+    password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
 

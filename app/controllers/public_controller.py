@@ -55,7 +55,7 @@ class PublicController(BaseController):
         if 'email' in request.form == False:
             return None
         try:
-            result = user_service.get_user_by_email(request.form['email'])
+            result = user_service.login_email(request.form['email'], request.form['password'])
             return result
         except Exception as e:
             print(e)

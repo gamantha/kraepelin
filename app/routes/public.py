@@ -24,7 +24,7 @@ def post_login():
     elif result['quota'] <= 0:
         flash('kuota test anda habis, silahkan hubungi admin.')
         return redirect(url_for('public.login_page'))
-    session['user_id'] = result['id']
+    session['user_id'] = result['user_id']
     return redirect(url_for('public.execute_kraepelin_test'))
 
 @public_routes.route('/test', methods=['GET'])
