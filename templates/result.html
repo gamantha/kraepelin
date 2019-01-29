@@ -19,6 +19,8 @@
         <p id="puncakTinggi"></p>
         Puncak terendah di baris ke:
         <p id="puncakRendah"></p>
+        Rata - rata
+        <p id="rataPuncak"></p>
         Rata - rata tiap menit:
         <p id="rataMenit"></p>
     </body>
@@ -149,8 +151,11 @@
             var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
             var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
             var minuteChart = new google.visualization.LineChart(document.getElementById('minutelinechart'));
-            document.getElementById("puncakTinggi").innerHTML = filled_count.indexOf(Math.max(...filled_count)) + 1;
-            document.getElementById("puncakRendah").innerHTML = filled_count.indexOf(Math.min(...filled_count)) + 1
+            var rataPuncakTinggi = filled_count.indexOf(Math.max(...filled_count)) + 1;
+            var rataPuncakRendah = filled_count.indexOf(Math.min(...filled_count)) + 1;
+            document.getElementById("puncakTinggi").innerHTML = rataPuncakTinggi;
+            document.getElementById("puncakRendah").innerHTML = rataPuncakRendah;
+            document.getElementById("rataPuncak").innerHTML = (rataPuncakTinggi + rataPuncakRendah) / 2;
             var jumlahMenit = minute_count.reduce((a, b) => a + b)
             var rataMenit = jumlahMenit / minute_count.length
             document.getElementById("rataMenit").innerHTML = rataMenit
