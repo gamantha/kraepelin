@@ -35,7 +35,7 @@ class KraepelinService():
         for i in range(size[0]):
             temp_arr = []
             for j in range(size[1]):
-                temp_arr.append(random.randint(1, 10))
+                temp_arr.append(random.randint(1, 9))
             result.append(temp_arr)
         return result
 
