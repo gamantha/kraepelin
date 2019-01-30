@@ -58,5 +58,4 @@ class PublicController(BaseController):
             result = user_service.login_email(request.form['email'], request.form['password'])
             return result
         except Exception as e:
-            print(e)
             return None
