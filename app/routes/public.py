@@ -25,7 +25,7 @@ def post_login():
         flash('kuota test anda habis, silahkan hubungi admin.')
         return redirect(url_for('public.login_page'))
     session['user_id'] = result['user_id']
-    return redirect(url_for('public.execute_kraepelin_test'))
+    return redirect(url_for('public.kraepelin_instruction'))
 
 @public_routes.route('/test', methods=['GET'])
 @login_required
@@ -37,6 +37,16 @@ def execute_kraepelin_test(*args, **kwargs):
         session.clear()
         redirect(url_for('public.login_page'))
     return render_template('index.html', title='Home', data=data)
+
+@public_routes.route('/thankyou', methods=['GET'])
+@login_required
+def kraepelin_thank_you(*args, **kwargs):
+    return render_template('thank_you.html', title='Thank you')
+
+@public_routes.route('/instruction', methods=['GET'])
+@login_required
+def kraepelin_instruction(*args, **kwargs):
+    return render_template('instruction.html', title='Instruction')
 
 @public_routes.route('/assess', methods=['POST'])
 @login_required

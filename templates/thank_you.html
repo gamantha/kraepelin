@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <!-- bootstrap css and js -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <title>{{title}}</title>
+  </head>
+  <body>
+      <div class="jumbotron d-flex align-items-center flex-column">
+        <h1 class="display-3">Terima Kasih!</h1>
+        <p class="lead"><strong>Silahkan hubungi admin</strong> untuk instruksi selanjutnya.</p>
+        <hr>
+        <p class="lead">
+          <a class="btn btn-primary btn-sm" href="/logout" role="button">Logout</a>
+        </p>
+      </div>
+  </body>
+  <footer></footer>
+</html>

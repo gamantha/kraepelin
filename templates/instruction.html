@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <!-- bootstrap css and js -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <title>{{title}}</title>
+  </head>
+  <body>
+      <div class="jumbotron d-flex align-items-center flex-column">
+        <h1 class="display-3">Halo! Selamat Datang.</h1>
+        <p class="lead"><strong>Ini adalah halaman instruksi test kraepelin</strong> 
+          Silahkan baca peraturan pengisian dengan seksama.</p>
+        <hr>
+        <ol>
+          <li>Pengerjaan soal akan diisi dari bawah ke atas</li>
+          <li>Test dimulai pada saat anda klik tombol [Mulai]</li>
+          <li>Soal berada di kiri input, anda akan mengisi di input yang tersedia dengan angka 1 digit</li>
+          <li>Jawaban adalah jumlah dari 2 bilangan di samping kiri, tidak lebih dari 10. Jika jawaban lebih dari 10, maka jawaban adalah angka satuan dari jawaban itu.</li>
+          <li>Setiap menjawab 1 soal, tekan [Enter] untuk lanjut ke soal berikutnya.</li>
+          <li>Untuk setiap kolom, anda mempunyai waktu 30 detik</li>
+          <li>Anda akan otomatis diarahkan ke kolom selanjutnya setiap 30 detik hingga ke kolom terakhir.</li>
+          <li>Jika anda sudah mengerti, silahkan klik lanjut untuk memulai test.</li>
+          
+        </ol>
+        <p class="lead">
+          <a class="btn btn-primary btn-sm" href="/test" role="button">Lanjut</a>
+        </p>
+      </div>
+  </body>
+  <footer></footer>
+</html>
