@@ -13,4 +13,5 @@ SQLALCHEMY_DATABASE_URI='mysql://' + os.environ.get('DB_USER') + ':' + os.enviro
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 SQLALCHEMY_BINDS = {
   'user': 'mysql://' + os.environ.get('DB_USER') + ':' + os.environ.get('DB_PASSWORD') + '@' + os.environ.get('DB_HOST') + '/' + os.environ.get('DB_CHAMILO'),
+  'scale_ref': 'mysql://' + os.environ.get('DB_USER') + ':' + os.environ.get('DB_PASSWORD') + '@' + os.environ.get('DB_HOST') + '/' + os.environ.get('DB_PPSDMDB'),
 }
