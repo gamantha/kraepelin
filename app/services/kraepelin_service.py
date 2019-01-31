@@ -5,6 +5,7 @@ from flask import json
 from sqlalchemy.exc import SQLAlchemyError
 from app.models import db
 from app.models.kraepelin import Kraepelin
+from app.models.scale_ref import ScaleRef
 from app.models.config import Config
 
 logger = logging.getLogger(__name__)
@@ -174,6 +175,11 @@ class KraepelinService():
         try:
             logger.info('getting kraepelin data with id: %d', id)
             kraepelin = db.session.query(Kraepelin).filter_by(id=id).first()
+            scale_ref = db.session.query(ScaleRef).filter_by(scale_name='kraepelin').order_by(ScaleRef.scaled.asc()).all()
+            scales = []
+            for scale in scale_ref:
+                """loop scale."""
+                scales.append(scale.__dict__['unscaled'])
             data = {}
             data = kraepelin.__dict__ if kraepelin else None
             return {
@@ -181,7 +187,8 @@ class KraepelinService():
                 'unfilled_count': data['unfilled_count'],
                 'incorrect_count': data['incorrect_count'],
                 'correct_count': data['correct_count'],
-                'minute_count': data['minute_count']
+                'minute_count': data['minute_count'],
+                'scales': json.dumps(scales),
             }
         except Exception as e:
             logger.warning('an error occured when reading database: %s', e)
