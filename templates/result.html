@@ -160,8 +160,8 @@
             var nilaiTerendah = Math.max(...filled_count);
             var RS = nilaiTertinggi + nilaiTerendah;
             var SS = 0
-            for (var i = 0; i >= scales.length; i++) {
-                if (RS <= scales[i]) {
+            for (var i = 0; i < scales.length; i++) {
+                if (RS >= scales[i]) {
                     SS = i
                 }
             }
