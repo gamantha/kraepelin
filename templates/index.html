@@ -172,7 +172,7 @@
                 if (seconds % secondLimit == 0) {
                     curr_col++;
                     audio.play();
-                    if (curr_col >= col) {
+                    if (curr_col >= col - 6) {
                         clearInterval(x);
                         // toggleInput(true);
                         postResult();
