@@ -1,185 +1,212 @@
 <html>
-    <head>
-        <meta charset = "UTF-8">
-        <script src = "{{ url_for('static', filename='js/gchart.min.js') }}"></script>
-        <!-- bootstrap css and js -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        <!-- bootstrap css and js -->
-        <title>{{ title }}</title>
-    </head>
-    <body>
-        <h1 class="text-center text-warning">Hasil untuk ID: {{ result_id }}</h1>
-        <div id="filledlinechart"></div>
-        <div id="unfilledlinechart"></div>
-        <div id="correctlinechart"></div>
-        <div id="incorrectlinechart"></div>
-        <div id="minutelinechart"></div>
-        Puncak tertinggi di baris ke:
-        <p id="puncakTinggi"></p>
-        Puncak terendah di baris ke:
-        <p id="puncakRendah"></p>
-        Rata - rata
-        <p id="rataPuncak"></p>
-        Rata - rata tiap menit:
-        <p id="rataMenit"></p>
-        Nilai RS:
-        <p id="nilaiRS"></p>
-        Nilai SS:
-        <p id="nilaiSS"></p>
-    </body>
-    <script>
-        var filled_count = JSON.parse({{ graph_data.filled_count | tojson }});
-        var unfilled_count = JSON.parse({{ graph_data.unfilled_count | tojson }});
-        var correct_count = JSON.parse({{ graph_data.correct_count | tojson }});
-        var incorrect_count = JSON.parse({{ graph_data.incorrect_count | tojson }});
-        var minute_count = JSON.parse({{ graph_data.minute_count | tojson }});
-        var scales = JSON.parse({{ graph_data.scales | tojson }});
-        console.log('scales', scales)
-        google.charts.load('current', {'packages':['corechart', 'line']});
-        google.charts.setOnLoadCallback(drawStuff);
+  <head>
+    <meta charset="UTF-8" />
+    <script src="{{ url_for('static', filename='js/gchart.min.js') }}"></script>
+    <!-- bootstrap css and js -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+    />
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- bootstrap css and js -->
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <h1 class="text-center text-warning">Hasil untuk ID: {{ result_id }}</h1>
+    <div id="filledlinechart"></div>
+    <div id="unfilledlinechart"></div>
+    <div id="correctlinechart"></div>
+    <div id="incorrectlinechart"></div>
+    <div id="minutelinechart"></div>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+              <th>Kategori</th>
+              <th>Nilai</th>
+            </tr>
+            <tr>
+        </thead>
+        <td>
+          Puncak tertinggi di baris ke:
+        </td>
+        <td id="puncakTinggi"></td>
+      </tr>
+      <tr>
+        <td>
+          Puncak terendah di baris ke:
+        </td>
+        <td id="puncakRendah"></td>
+      </tr>
+      <tr>
+        <td>Rata - rata</td>
+        <td id="rataPuncak"></td>
+      </tr>
+      <tr>
+        <td>Rata - rata tiap menit:</td>
+        <td id="rataMenit"></td>
+      </tr>
+      <tr>
+        <td>Nilai RS</td>
+        <td id="nilaiRS"></td>
+      </tr>
+      <tr>
+        <td>Nilai SS</td>
+        <td id="nilaiSS"></td>
+      </tr>
+    </table>
+  </body>
+  <script>
+    var filled_count = JSON.parse({{ graph_data.filled_count | tojson }});
+    var unfilled_count = JSON.parse({{ graph_data.unfilled_count | tojson }});
+    var correct_count = JSON.parse({{ graph_data.correct_count | tojson }});
+    var incorrect_count = JSON.parse({{ graph_data.incorrect_count | tojson }});
+    var minute_count = JSON.parse({{ graph_data.minute_count | tojson }});
+    var scales = JSON.parse({{ graph_data.scales | tojson }});
+    console.log('scales', scales)
+    google.charts.load('current', {'packages':['corechart', 'line']});
+    google.charts.setOnLoadCallback(drawStuff);
 
-        function drawStuff() {
-            resultFilled = [];
-            resultUnfilled = [];
-            resultCorrect = [];
-            resultIncorrect = [];
-            resultMinute = [];
+    function drawStuff() {
+        resultFilled = [];
+        resultUnfilled = [];
+        resultCorrect = [];
+        resultIncorrect = [];
+        resultMinute = [];
 
-            filled_count.map((v, i) => {
-                resultFilled.push([i, v]);
-                resultUnfilled.push([i, unfilled_count[i]])
-                resultCorrect.push([i, correct_count[i]])
-                resultIncorrect.push([i, incorrect_count[i]])
-                resultMinute.push([i, minute_count[i]])
-            })
+        filled_count.map((v, i) => {
+            resultFilled.push([i, v]);
+            resultUnfilled.push([i, unfilled_count[i]])
+            resultCorrect.push([i, correct_count[i]])
+            resultIncorrect.push([i, incorrect_count[i]])
+            resultMinute.push([i, minute_count[i]])
+        })
 
-            var filledData = new google.visualization.DataTable();
-            filledData.addColumn('number', 'x');
-            filledData.addColumn('number', 'jumlah');
-            filledData.addRows(resultFilled);
-            var filledOptions = {
-                title: 'Grafik Jawaban Terjawab',
-                width: '100%',
-                legend: { position: 'none' },
-                chart: { title: 'Jawaban terjawab',
-                        subtitle: 'Jumlah jawaban yang dijawab per-kolom' },
-                hAxis: {
-                    title: 'kolom'
-                },
-                vAxis: {
-                    title: 'jumlah terjawab'
-                },
-                colors: ['green']
-            };
-
-            // correct answers
-            var correctData = new google.visualization.DataTable();
-            correctData.addColumn('number', 'x');
-            correctData.addColumn('number', 'jumlah');
-            correctData.addRows(resultCorrect)
-            var correctOptions = {
-                title: 'Grafik Jawaban Terjawab Benar',
-                width: '100%',
-                legend: { position: 'none' },
-                chart: { title: 'Jawaban Benar',
-                        subtitle: 'Jumlah jawaban yang dijawab benar per-kolom' },
-                hAxis: {
-                    title: 'kolom'
-                },
-                vAxis: {
-                    title: 'jumlah terjawab benar'
-                },
-                colors: ['green']
-            };
-            // unfilled data
-            var unfilledData = new google.visualization.DataTable();
-            unfilledData.addColumn('number', 'x');
-            unfilledData.addColumn('number', 'jumlah');
-            unfilledData.addRows(resultUnfilled)
-            var unfilledOptions = {
-                title: 'Grafik Jawaban Tidak Terjawab',
-                width: '100%',
-                legend: { position: 'none' },
-                chart: { title: 'Jawaban tak terjawab',
-                        subtitle: 'Jumlah jawaban yang tidak dijawab per-kolom' },
-                hAxis: {
-                    title: 'kolom'
-                },
-                vAxis: {
-                    title: 'jumlah tidak terjawab'
-                },
-                colors: ['red']
-            };
-            // incorrect answers
-            var incorrectData = new google.visualization.DataTable();
-            incorrectData.addColumn('number', 'x');
-            incorrectData.addColumn('number', 'jumlah');
-            incorrectData.addRows(resultIncorrect)
-            var incorrectOptions = {
-                title: 'Grafik Jawaban Terjawab Salah',
-                width: '100%',
-                legend: { position: 'none' },
-                chart: { title: 'Jawaban Salah',
-                        subtitle: 'Jumlah jawaban yang dijawab salah per-kolom' },
-                hAxis: {
-                    title: 'kolom'
-                },
-                vAxis: {
-                    title: 'jumlah terjawab salah'
-                },
-                colors: ['red']
-            };
-
-            // minute answers
-            var minuteData = new google.visualization.DataTable();
-            minuteData.addColumn('number', 'x');
-            minuteData.addColumn('number', 'jumlah');
-            minuteData.addRows(resultMinute)
-            var minuteOptions = {
-                title: 'Grafik Jawaban Terjawab Per menit',
-                width: '100%',
-                legend: { position: 'none' },
-                chart: { title: 'Jawaban terjawab',
-                        subtitle: 'Jumlah jawaban yang dijawab per menit' },
-                hAxis: {
-                    title: 'menit'
-                },
-                vAxis: {
-                    title: 'jumlah terjawab'
-                },
-                colors: ['blue']
-            };
-
-            var filledChart = new google.visualization.LineChart(document.getElementById('filledlinechart'));
-            var unfilledChart = new google.visualization.LineChart(document.getElementById('unfilledlinechart'));
-            var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
-            var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
-            var minuteChart = new google.visualization.LineChart(document.getElementById('minutelinechart'));
-            var nilaiTertinggi = Math.max(...filled_count);
-            var nilaiTerendah = Math.max(...filled_count);
-            var RS = nilaiTertinggi + nilaiTerendah;
-            var SS = 0
-            for (var i = 0; i < scales.length; i++) {
-                if (RS >= scales[i]) {
-                    SS = i
-                }
-            }
-            var rataPuncakTinggi = filled_count.indexOf(nilaiTertinggi) + 1;
-            var rataPuncakRendah = filled_count.indexOf(nilaiTerendah) + 1;
-            document.getElementById("puncakTinggi").innerHTML = rataPuncakTinggi;
-            document.getElementById("puncakRendah").innerHTML = rataPuncakRendah;
-            document.getElementById("rataPuncak").innerHTML = (rataPuncakTinggi + rataPuncakRendah) / 2;
-            var jumlahMenit = minute_count.reduce((a, b) => a + b)
-            var rataMenit = jumlahMenit / minute_count.length
-            document.getElementById("rataMenit").innerHTML = rataMenit
-            document.getElementById("nilaiRS").innerHTML = RS
-            document.getElementById("nilaiSS").innerHTML = SS
-            filledChart.draw(filledData, filledOptions);
-            unfilledChart.draw(unfilledData, unfilledOptions);
-            correctChart.draw(correctData, correctOptions);
-            incorrectChart.draw(incorrectData, incorrectOptions);
-            minuteChart.draw(minuteData, minuteOptions);
+        var filledData = new google.visualization.DataTable();
+        filledData.addColumn('number', 'x');
+        filledData.addColumn('number', 'jumlah');
+        filledData.addRows(resultFilled);
+        var filledOptions = {
+            title: 'Grafik Jawaban Terjawab',
+            width: '100%',
+            legend: { position: 'none' },
+            chart: { title: 'Jawaban terjawab',
+                    subtitle: 'Jumlah jawaban yang dijawab per-kolom' },
+            hAxis: {
+                title: 'kolom'
+            },
+            vAxis: {
+                title: 'jumlah terjawab'
+            },
+            colors: ['green']
         };
-    </script>
+
+        // correct answers
+        var correctData = new google.visualization.DataTable();
+        correctData.addColumn('number', 'x');
+        correctData.addColumn('number', 'jumlah');
+        correctData.addRows(resultCorrect)
+        var correctOptions = {
+            title: 'Grafik Jawaban Terjawab Benar',
+            width: '100%',
+            legend: { position: 'none' },
+            chart: { title: 'Jawaban Benar',
+                    subtitle: 'Jumlah jawaban yang dijawab benar per-kolom' },
+            hAxis: {
+                title: 'kolom'
+            },
+            vAxis: {
+                title: 'jumlah terjawab benar'
+            },
+            colors: ['green']
+        };
+        // unfilled data
+        var unfilledData = new google.visualization.DataTable();
+        unfilledData.addColumn('number', 'x');
+        unfilledData.addColumn('number', 'jumlah');
+        unfilledData.addRows(resultUnfilled)
+        var unfilledOptions = {
+            title: 'Grafik Jawaban Tidak Terjawab',
+            width: '100%',
+            legend: { position: 'none' },
+            chart: { title: 'Jawaban tak terjawab',
+                    subtitle: 'Jumlah jawaban yang tidak dijawab per-kolom' },
+            hAxis: {
+                title: 'kolom'
+            },
+            vAxis: {
+                title: 'jumlah tidak terjawab'
+            },
+            colors: ['red']
+        };
+        // incorrect answers
+        var incorrectData = new google.visualization.DataTable();
+        incorrectData.addColumn('number', 'x');
+        incorrectData.addColumn('number', 'jumlah');
+        incorrectData.addRows(resultIncorrect)
+        var incorrectOptions = {
+            title: 'Grafik Jawaban Terjawab Salah',
+            width: '100%',
+            legend: { position: 'none' },
+            chart: { title: 'Jawaban Salah',
+                    subtitle: 'Jumlah jawaban yang dijawab salah per-kolom' },
+            hAxis: {
+                title: 'kolom'
+            },
+            vAxis: {
+                title: 'jumlah terjawab salah'
+            },
+            colors: ['red']
+        };
+
+        // minute answers
+        var minuteData = new google.visualization.DataTable();
+        minuteData.addColumn('number', 'x');
+        minuteData.addColumn('number', 'jumlah');
+        minuteData.addRows(resultMinute)
+        var minuteOptions = {
+            title: 'Grafik Jawaban Terjawab Per menit',
+            width: '100%',
+            legend: { position: 'none' },
+            chart: { title: 'Jawaban terjawab',
+                    subtitle: 'Jumlah jawaban yang dijawab per menit' },
+            hAxis: {
+                title: 'menit'
+            },
+            vAxis: {
+                title: 'jumlah terjawab'
+            },
+            colors: ['blue']
+        };
+
+        var filledChart = new google.visualization.LineChart(document.getElementById('filledlinechart'));
+        var unfilledChart = new google.visualization.LineChart(document.getElementById('unfilledlinechart'));
+        var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
+        var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
+        var minuteChart = new google.visualization.LineChart(document.getElementById('minutelinechart'));
+        var nilaiTertinggi = Math.max(...filled_count);
+        var nilaiTerendah = Math.max(...filled_count);
+        var RS = nilaiTertinggi + nilaiTerendah;
+        var SS = 0
+        for (var i = 0; i < scales.length; i++) {
+            if (RS >= scales[i]) {
+                SS = i
+            }
+        }
+        var rataPuncakTinggi = filled_count.indexOf(nilaiTertinggi) + 1;
+        var rataPuncakRendah = filled_count.indexOf(nilaiTerendah) + 1;
+        document.getElementById("puncakTinggi").innerHTML = rataPuncakTinggi;
+        document.getElementById("puncakRendah").innerHTML = rataPuncakRendah;
+        document.getElementById("rataPuncak").innerHTML = (rataPuncakTinggi + rataPuncakRendah) / 2;
+        var jumlahMenit = minute_count.reduce((a, b) => a + b)
+        var rataMenit = (jumlahMenit / minute_count.length).toFixed(2)
+        document.getElementById("rataMenit").innerHTML = rataMenit
+        document.getElementById("nilaiRS").innerHTML = RS
+        document.getElementById("nilaiSS").innerHTML = SS
+        filledChart.draw(filledData, filledOptions);
+        unfilledChart.draw(unfilledData, unfilledOptions);
+        correctChart.draw(correctData, correctOptions);
+        incorrectChart.draw(incorrectData, incorrectOptions);
+        minuteChart.draw(minuteData, minuteOptions);
+    };
+  </script>
 </html>
