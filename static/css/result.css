@@ -1,0 +1,18 @@
+.table-graph {
+  width: 80% !important;
+  font-size: 10px !important;
+  border: 0.5px;
+  margin-left: 10%;
+}
+
+.table-graph table,
+tr,
+td {
+  border: 1px solid black;
+}
+
+.table-graph tr,
+td,
+th {
+  padding: 0px !important;
+}

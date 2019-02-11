@@ -2,6 +2,11 @@
   <head>
     <meta charset="UTF-8" />
     <script src="{{ url_for('static', filename='js/gchart.min.js') }}"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/result.css') }}"
+    />
+
     <!-- bootstrap css and js -->
     <link
       rel="stylesheet"
@@ -14,18 +19,83 @@
   <body>
     <h1 class="text-center text-warning">Hasil untuk ID: {{ result_id }}</h1>
     <div id="filledlinechart"></div>
-    <div id="unfilledlinechart"></div>
-    <div id="correctlinechart"></div>
-    <div id="incorrectlinechart"></div>
-    <div id="minutelinechart"></div>
-    <table class="table table-striped">
+    <div class="table-responsive">
+      <table class="table table-graph" id="filledTable">
         <thead class="thead-dark">
-            <tr>
-              <th>Kategori</th>
-              <th>Nilai</th>
-            </tr>
-            <tr>
+          <tr id="trFilledKolom">
+            <th>Kolom</th>
+          </tr>
+          <tr id="trFilledJumlah">
+            <th>Jumlah</th>
+          </tr>
         </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="unfilledlinechart"></div>
+    <div class="table-responsive">
+      <table class="table table-graph" id="unfilledTable">
+        <thead class="thead-dark">
+          <tr id="trunfilledKolom">
+            <th>Kolom</th>
+          </tr>
+          <tr id="trunfilledJumlah">
+            <th>Jumlah</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="correctlinechart"></div>
+    <div class="table-responsive">
+      <table class="table table-graph" id="correctTable">
+        <thead class="thead-dark">
+          <tr id="trcorrectKolom">
+            <th>Kolom</th>
+          </tr>
+          <tr id="trcorrectJumlah">
+            <th>Jumlah</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="incorrectlinechart"></div>
+    <div class="table-responsive">
+      <table class="table table-graph" id="incorrectTable">
+        <thead class="thead-dark">
+          <tr id="trincorrectKolom">
+            <th>Kolom</th>
+          </tr>
+          <tr id="trincorrectJumlah">
+            <th>Jumlah</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="minutelinechart"></div>
+    <div class="table-responsive">
+      <table class="table table-graph" id="minuteTable">
+        <thead class="thead-dark">
+          <tr id="trminuteKolom">
+            <th>Kolom</th>
+          </tr>
+          <tr id="trminuteJumlah">
+            <th>Jumlah</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>Kategori</th>
+          <th>Nilai</th>
+        </tr>
+      </thead>
+      <tr>
         <td>
           Puncak tertinggi di baris ke:
         </td>
@@ -62,9 +132,28 @@
     var incorrect_count = JSON.parse({{ graph_data.incorrect_count | tojson }});
     var minute_count = JSON.parse({{ graph_data.minute_count | tojson }});
     var scales = JSON.parse({{ graph_data.scales | tojson }});
-    console.log('scales', scales)
     google.charts.load('current', {'packages':['corechart', 'line']});
     google.charts.setOnLoadCallback(drawStuff);
+    drawTable(filled_count, 'trFilled')
+    drawTable(unfilled_count, 'trunfilled')
+    drawTable(correct_count, 'trcorrect')
+    drawTable(incorrect_count, 'trincorrect')
+    drawTable(minute_count, 'trminute')
+
+
+    function drawTable(items, lable) {
+      var rowKolom = document.getElementById(lable + 'Kolom');
+      var rowJumlah = document.getElementById(lable + 'Jumlah');
+
+      for(let i = 0; i < items.length; i++) {
+        tdKolom = document.createElement('td');
+        tdJumlah = document.createElement('td');
+        tdKolom.appendChild(document.createTextNode(i+1))
+        tdJumlah.appendChild(document.createTextNode(items[i]))
+        rowKolom.appendChild(tdKolom)
+        rowJumlah.appendChild(tdJumlah)
+      }
+    }
 
     function drawStuff() {
         resultFilled = [];
