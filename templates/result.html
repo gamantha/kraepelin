@@ -155,6 +155,14 @@
       }
     }
 
+    function getColumn(straw, needle) {
+      var index = straw.slice(0,40).indexOf(needle)
+      if (index < 5) {
+        return straw.slice(5, 40).indexOf(needle) + 5
+      }
+      return index
+    }
+
     function drawStuff() {
         resultFilled = [];
         resultUnfilled = [];
@@ -272,8 +280,8 @@
         var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
         var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
         var minuteChart = new google.visualization.LineChart(document.getElementById('minutelinechart'));
-        var nilaiTertinggi = Math.max(...filled_count);
-        var nilaiTerendah = Math.max(...filled_count);
+        var nilaiTertinggi = Math.max(...filled_count.slice(5,40));
+        var nilaiTerendah = Math.min(...filled_count.slice(5,40));
         var RS = nilaiTertinggi + nilaiTerendah;
         var SS = 0
         for (var i = 0; i < scales.length; i++) {
@@ -281,8 +289,8 @@
                 SS = i
             }
         }
-        var rataPuncakTinggi = filled_count.indexOf(nilaiTertinggi) + 1;
-        var rataPuncakRendah = filled_count.indexOf(nilaiTerendah) + 1;
+        var rataPuncakTinggi = getColumn(filled_count, nilaiTertinggi) + 1;
+        var rataPuncakRendah = getColumn(filled_count, nilaiTerendah) + 1;
         document.getElementById("puncakTinggi").innerHTML = rataPuncakTinggi;
         document.getElementById("puncakRendah").innerHTML = rataPuncakRendah;
         document.getElementById("rataPuncak").innerHTML = (rataPuncakTinggi + rataPuncakRendah) / 2;
