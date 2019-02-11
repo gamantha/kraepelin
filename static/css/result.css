@@ -16,3 +16,8 @@ td,
 th {
   padding: 0px !important;
 }
+
+.table-kategori {
+  width: 80% !important;
+  margin-left: 10%;
+}
