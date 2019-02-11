@@ -163,11 +163,11 @@
         resultMinute = [];
 
         filled_count.map((v, i) => {
-            resultFilled.push([i, v]);
-            resultUnfilled.push([i, unfilled_count[i]])
-            resultCorrect.push([i, correct_count[i]])
-            resultIncorrect.push([i, incorrect_count[i]])
-            resultMinute.push([i, minute_count[i]])
+            resultFilled.push([i+1, v]);
+            resultUnfilled.push([i+1, unfilled_count[i]])
+            resultCorrect.push([i+1, correct_count[i]])
+            resultIncorrect.push([i+1, incorrect_count[i]])
+            resultMinute.push([i+1, minute_count[i]])
         })
 
         var filledData = new google.visualization.DataTable();
