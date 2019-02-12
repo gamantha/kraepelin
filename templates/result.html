@@ -295,7 +295,7 @@
         document.getElementById("puncakRendah").innerHTML = rataPuncakRendah;
         document.getElementById("rataPuncak").innerHTML = (rataPuncakTinggi + rataPuncakRendah) / 2;
         var jumlahMenit = minute_count.reduce((a, b) => a + b)
-        var rataMenit = (jumlahMenit / minute_count.length).toFixed(2)
+        var rataMenit = (jumlahMenit / 20).toFixed(2)
         document.getElementById("rataMenit").innerHTML = rataMenit
         document.getElementById("nilaiRS").innerHTML = RS
         document.getElementById("nilaiSS").innerHTML = SS
