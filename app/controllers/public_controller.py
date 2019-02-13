@@ -59,3 +59,13 @@ class PublicController(BaseController):
             return result
         except Exception as e:
             return None
+
+    def get_test_list(self, request):
+        """
+        Get list of test
+        """
+        try:
+            result = kraepelin_service.get_test_list(request)
+            return result
+        except Exception as e:
+            return None

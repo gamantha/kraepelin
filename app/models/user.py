@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from sqlalchemy.orm import relationship
 from app.models import db
@@ -7,6 +8,7 @@ class User(db.Model):
     User table model
     """
     __bind_key__ = 'user'
+    __table_args__ = {'schema': os.environ.get('DB_CHAMILO')}
     # override default table name
     __tablename__ = 'user'
 

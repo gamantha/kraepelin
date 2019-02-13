@@ -60,3 +60,10 @@ def assess_kraepelin_result(id, *args, **kwargs):
     # result page
     graph_data = public_controller.get_filled_answer(id)
     return render_template('result.html', title='Result', result_id=id, graph_data=graph_data)
+
+@public_routes.route('/assess_results', methods=['GET'])
+@login_required
+def get_list_test(*args, **kwargs):
+    # list of taken tests page
+    data_test = public_controller.get_test_list(request)
+    return render_template('test_list.html', title='Daftar Hasil Test', data=data_test)

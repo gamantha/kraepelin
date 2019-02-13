@@ -3,8 +3,10 @@ import random
 import logging
 from flask import json
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import aliased
 from app.models import db
 from app.models.kraepelin import Kraepelin
+from app.models.user import User
 from app.models.scale_ref import ScaleRef
 from app.models.config import Config
 
@@ -14,6 +16,26 @@ class KraepelinService():
     """
     All kraepelin data logic service.
     """
+
+    def get_test_list(self, request):
+        """
+        get test list
+        """
+        total_items = Kraepelin.query.count()
+        page = request.args.get('page') if request.args.get('page') else 1
+        email = request.args.get('email') if request.args.get('email') else None
+        # user alias
+        user_alias = aliased(User, name='user_id')
+        # paginate
+        query = db.session.query(Kraepelin, User).join(User)
+        if email is not None:
+            query = query.filter(User.email == email)
+        result = query.order_by(Kraepelin.created_at.desc()).paginate(int(page), 10, False)
+        return {
+            'items': result.items,
+            'total': total_items,
+            'current_page': page
+        }
 
     def prepare_test_data(self):
         """

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from app.models import db
+from app.models.user import User
 
 class Kraepelin(db.Model):
     """
@@ -10,7 +11,8 @@ class Kraepelin(db.Model):
     __tablename__ = 'kraepelins'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(255))
+    user_id = db.Column(db.String(255), db.ForeignKey(User.user_id))
+    user = db.relationship('User')
     answers = db.Column(db.Text)
     questions = db.Column(db.Text)
     correct_count = db.Column(db.Text)
