@@ -3,7 +3,6 @@ import random
 import logging
 from flask import json
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import aliased
 from app.models import db
 from app.models.kraepelin import Kraepelin
 from app.models.user import User
@@ -24,8 +23,6 @@ class KraepelinService():
         total_items = Kraepelin.query.count()
         page = request.args.get('page') if request.args.get('page') else 1
         email = request.args.get('email') if request.args.get('email') else None
-        # user alias
-        user_alias = aliased(User, name='user_id')
         # paginate
         query = db.session.query(Kraepelin, User).join(User)
         if email is not None:
