@@ -34,7 +34,8 @@ class KraepelinService():
         return {
             'items': result.items,
             'total': total_items,
-            'current_page': page
+            'current_page': int(page),
+            'base_url': '?email=' + email + '&' if email is not None else '?' ,
         }
 
     def prepare_test_data(self):

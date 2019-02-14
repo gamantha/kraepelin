@@ -9,10 +9,13 @@
     <title>{{ title }}</title>
   </head>
   <body>
-    <form action="/assess_results" method="GET">
-      <input type="text" name="email" placeholder="Search.." />
-      <input type="submit" value="search" />
-    </form>
+    <div class="text-center">
+      <h2>Daftar Hasil Test</h2>
+      <form action="/assess_results" method="GET">
+        <input class="input-lg" type="text" name="email" placeholder="email" />
+        <input type="submit" value="search" />
+      </form>
+    </div>
     <table class="table table-striped">
       <thead class="thead-dark">
         <td>
@@ -40,15 +43,49 @@
 
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-end">
+        {% if data.current_page == 1 %}
         <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Previous</a>
+          <a class="page-link" href="{{ data.base_url }}page=1">1</a>
         </li>
-        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
-        <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
-        <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
         <li class="page-item">
-          <a class="page-link" href="#">Next</a>
+          <a class="page-link" href="{{ data.base_url }}page=2">2</a>
         </li>
+        <li class="page-item">
+          <a class="page-link" href="{{ data.base_url }}page=3">3</a>
+        </li>
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="{{ data.base_url }}page={{ data.current_page + 1 }}"
+            >Next</a
+          >
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="{{ data.base_url }}page=1">first</a>
+        </li>
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="{{ data.base_url }}page={{ data.current_page - 1 }}"
+            >prev</a
+          >
+        </li>
+        <li class="page-item disabled">
+          <a
+            class="page-link"
+            href="{{ data.base_url }}page={{ data.current_page }}"
+            >{{ data.current_page }}</a
+          >
+        </li>
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="{{ data.base_url }}page={{ data.current_page + 1 }}"
+            >Next</a
+          >
+        </li>
+        {% endif %}
       </ul>
     </nav>
   </body>
