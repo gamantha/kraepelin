@@ -14,6 +14,8 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255))
+    firstname = db.Column(db.String(255))
+    lastname = db.Column(db.String(255))
     salt = db.Column(db.String(255))
     password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime)

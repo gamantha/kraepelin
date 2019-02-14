@@ -199,6 +199,7 @@ class KraepelinService():
             logger.info('getting kraepelin data with id: %d', id)
             kraepelin = db.session.query(Kraepelin).filter_by(id=id).first()
             scale_ref = db.session.query(ScaleRef).filter_by(scale_name='kraepelin').order_by(ScaleRef.scaled.asc()).all()
+            user = db.session.query(User).filter_by(user_id=kraepelin.user_id).first()
             scales = []
             for scale in scale_ref:
                 """loop scale."""
@@ -212,6 +213,7 @@ class KraepelinService():
                 'correct_count': data['correct_count'],
                 'minute_count': data['minute_count'],
                 'scales': json.dumps(scales),
+                'user': user.__dict__
             }
         except Exception as e:
             logger.warning('an error occured when reading database: %s', e)
