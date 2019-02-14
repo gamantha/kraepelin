@@ -8,7 +8,7 @@ class User(db.Model):
     User table model
     """
     __bind_key__ = 'user'
-    __table_args__ = {'schema': os.environ.get('DB_CHAMILO')}
+    __table_args__ = {'schema': 'chamilo_ppsdm_db'}
     # override default table name
     __tablename__ = 'user'
 
