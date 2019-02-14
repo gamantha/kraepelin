@@ -34,7 +34,9 @@
       {% for (kraepelin, user) in data["items"] %}
       <tr>
         <td>{{ kraepelin.id }}</td>
-        <td>{{ user.email }}</td>
+        <td>
+          <a href="/assess_result/{{ kraepelin.id }}">{{ user.email }}</a>
+        </td>
         <td>{{ user.name }}</td>
         <td>{{ kraepelin.created_at }}</td>
       </tr>

@@ -17,7 +17,14 @@
     <title>{{ title }}</title>
   </head>
   <body>
-    <h1 class="text-center text-warning">Hasil untuk ID: {{ result_id }}</h1>
+    <div class="text-center">
+      <h1 class="text-center text-warning">Hasil Kraepelin</h1>
+      <p>ID: {{ result_id }}</p>
+      <p>email: {{ graph_data.user.email }}</p>
+      <p>
+        name: {{ graph_data.user.firstname + " " + graph_data.user.lastname }}
+      </p>
+    </div>
     <div id="filledlinechart"></div>
     <div class="table-responsive">
       <table class="table table-graph" id="filledTable">
