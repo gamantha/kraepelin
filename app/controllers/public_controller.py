@@ -68,4 +68,5 @@ class PublicController(BaseController):
             result = kraepelin_service.get_test_list(request)
             return result
         except Exception as e:
+            print('error', e)
             return None
