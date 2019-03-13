@@ -106,19 +106,23 @@ class KraepelinService():
         filled_answer = []
         unfilled_answer = []
         minute_count = []
+        answer_map = []
         for i in range(len(questions)):
             filled_score = 0
             correct_score = 0
             incorrect_score = 0
             unfilled_score = 0
+            amap = []
             if (i%2 == 0):
                 minute_score = 0
             for j in range(len(answers[i])):
                 if answers[i][j] is not None:
                     if answers[i][j] == ((questions[i][j] + questions[i][j+1]) % 10):
                         correct_score += 1
+                        amap.append(1)
                     else:
                         incorrect_score += 1
+                        amap.append(0)
                     filled_score += 1
                     minute_score += 1
                 else:
@@ -127,9 +131,10 @@ class KraepelinService():
             unfilled_answer.append(unfilled_score)
             correct_answer.append(correct_score)
             incorrect_answer.append(incorrect_score)
+            answer_map.append(amap)
             if (i%2 == 0):
                 minute_count.append(minute_score)
-        return correct_answer, incorrect_answer, filled_answer, unfilled_answer, minute_count
+        return correct_answer, incorrect_answer, filled_answer, unfilled_answer, minute_count, answer_map
     
     def calculate_filled(self, questions, answers):
         """
@@ -159,7 +164,7 @@ class KraepelinService():
         questions = self.normalize_questions(payload['questions'])
         answers = self.normalize_answers(payload['answers'], payload['questions'])
         logger.info('calculating result.')
-        correct_count, incorrect_count, filled_answer, unfilled_answer, minute_count = self.calculate_result(questions, answers)
+        correct_count, incorrect_count, filled_answer, unfilled_answer, minute_count, answer_map = self.calculate_result(questions, answers)
         # store to database
         logger.info('begin writing to database.')
         kraepelin = Kraepelin()
@@ -172,6 +177,7 @@ class KraepelinService():
         kraepelin.answer_count = len(payload['answers'])
         kraepelin.filled_count = json.dumps(filled_answer)
         kraepelin.unfilled_count = json.dumps(unfilled_answer)
+        kraepelin.answer_map = json.dumps(answer_map)
         kraepelin.starttime = datetime.datetime.strptime(payload['starttime'], "%a, %d %b %Y %H:%M:%S %Z")
         kraepelin.endtime = datetime.datetime.strptime(payload['endtime'], "%a, %d %b %Y %H:%M:%S %Z")
         
@@ -197,6 +203,7 @@ class KraepelinService():
             kraepelin = db.session.query(Kraepelin).filter_by(id=id).first()
             scale_ref = db.session.query(ScaleRef).filter_by(scale_name='kraepelin').order_by(ScaleRef.scaled.asc()).all()
             user = db.session.query(User).filter_by(user_id=kraepelin.user_id).first()
+
             scales = []
             for scale in scale_ref:
                 """loop scale."""
@@ -205,6 +212,7 @@ class KraepelinService():
             data = kraepelin.__dict__ if kraepelin else None
             return {
                 'filled_count': data['filled_count'],
+                'answer_map': data['answer_map'],
                 'unfilled_count': data['unfilled_count'],
                 'incorrect_count': data['incorrect_count'],
                 'correct_count': data['correct_count'],

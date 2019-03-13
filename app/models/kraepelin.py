@@ -21,6 +21,7 @@ class Kraepelin(db.Model):
     minute_count = db.Column(db.Text)
     filled_count = db.Column(db.Text)
     unfilled_count = db.Column(db.Text)
+    answer_map = db.Column(db.Text)
     starttime = db.Column(db.DateTime)
     endtime = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime)
