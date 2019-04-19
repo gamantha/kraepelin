@@ -22,7 +22,7 @@
       <p>ID: {{ result_id }}</p>
       <p>email: {{ graph_data.user.email }}</p>
       <p>
-        name: {{ graph_data.user.firstname + " " + graph_data.user.lastname }}
+        name: {{ graph_data.user.firstname + ' ' + graph_data.user.lastname }}
       </p>
     </div>
     <div id="filledlinechart"></div>
@@ -188,28 +188,28 @@
             resultMinute.push([i+1, minute_count[i]])
         })
 
-        var filledData = new google.visualization.DataTable();
-        filledData.addColumn('number', 'x');
-        filledData.addColumn('number', 'jumlah');
-        filledData.addRows(resultFilled);
-        var filledOptions = {
-            title: 'Grafik Jawaban Terjawab',
-            width: '100%',
-            legend: { position: 'none' },
-            chart: { title: 'Jawaban terjawab',
-                    subtitle: 'Jumlah jawaban yang dijawab per-kolom' },
-            hAxis: {
-                title: 'kolom'
-            },
-            vAxis: {
-                title: 'jumlah terjawab'
-            },
-            colors: ['green']
-        };
+        // var filledData = new google.visualization.DataTable();
+        // filledData.addColumn('number', 'x');
+        // filledData.addColumn('number', 'jumlah');
+        // filledData.addRows(resultFilled);
+        // var filledOptions = {
+        //     title: 'Grafik Jawaban Terjawab',
+        //     width: '100%',
+        //     legend: { position: 'none' },
+        //     chart: { title: 'Jawaban terjawab',
+        //             subtitle: 'Jumlah jawaban yang dijawab per-kolom' },
+        //     hAxis: {
+        //         title: 'kolom'
+        //     },
+        //     vAxis: {
+        //         title: 'jumlah terjawab'
+        //     },
+        //     colors: ['green']
+        // };
         var answerMapData = new google.visualization.DataTable();
+
         answerMapData.addColumn('number', 'x');
         answerMapData.addColumn('number', 'jawaban salah (kolom, nomor)');
-        console.log('answermap', answer_map)
         var answerMapres = []
         answerData = answer_map.map((v, i) => {
           var res = []
@@ -218,8 +218,17 @@
               answerMapres.push([i+1, a])
             }
           }
+          answerMapres.push([i+1, 8])
         })
         answerMapData.addRows(answerMapres);
+        var viewAM = new google.visualization.DataView(answerMapData);
+        viewAM.setColumns([0, 1, {
+          label: 'filledAnswer',
+          type: 'number',
+          calc: function (dt, row) {
+            return resultFilled[dt.hc[row][0].Cf-1][1]
+          }
+        }])
         var answerMapOption = {
             title: 'Grafik Jawaban Salah',
             width: '100%',
@@ -232,7 +241,9 @@
             vAxis: {
                 title: 'jawaban salah'
             },
-            colors: ['red']
+            colors: ['red'],
+            seriesType: 'scatter',
+            series: {1: {type: 'line'}}
         };
 
         // correct answers
@@ -314,7 +325,7 @@
         };
 
         var filledChart = new google.visualization.LineChart(document.getElementById('filledlinechart'));
-        var answerChart = new google.visualization.ScatterChart(document.getElementById('answerchart'));
+        var answerChart = new google.visualization.ComboChart(document.getElementById('answerchart'));
         var unfilledChart = new google.visualization.LineChart(document.getElementById('unfilledlinechart'));
         var correctChart = new google.visualization.LineChart(document.getElementById('correctlinechart'));
         var incorrectChart = new google.visualization.LineChart(document.getElementById('incorrectlinechart'));
@@ -338,8 +349,8 @@
         document.getElementById("rataMenit").innerHTML = rataMenit
         document.getElementById("nilaiRS").innerHTML = RS
         document.getElementById("nilaiSS").innerHTML = SS
-        filledChart.draw(filledData, filledOptions);
-        answerChart.draw(answerMapData, answerMapOption);
+        // filledChart.draw(filledData, filledOptions);
+        answerChart.draw(viewAM, answerMapOption);
         unfilledChart.draw(unfilledData, unfilledOptions);
         correctChart.draw(correctData, correctOptions);
         incorrectChart.draw(incorrectData, incorrectOptions);
