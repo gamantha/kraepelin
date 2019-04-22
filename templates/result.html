@@ -218,7 +218,6 @@
               answerMapres.push([i+1, a])
             }
           }
-          answerMapres.push([i+1, 8])
         })
         answerMapData.addRows(answerMapres);
         var viewAM = new google.visualization.DataView(answerMapData);
@@ -226,7 +225,8 @@
           label: 'filledAnswer',
           type: 'number',
           calc: function (dt, row) {
-            return resultFilled[dt.hc[row][0].Cf-1][1]
+            const temp = resultFilled[dt.hc[row][0].Cf-1][1]
+            return temp
           }
         }])
         var answerMapOption = {
